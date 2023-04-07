@@ -4,7 +4,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.*
 import com.chooongg.widget.formAdapter.creator.PartCreator
 import com.chooongg.widget.formAdapter.item.FormItem
-import com.chooongg.widget.formAdapter.style.Style
+import com.chooongg.widget.formAdapter.item.FormItemFactoryCache
+import com.chooongg.widget.formAdapter.partStyle.PartStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -13,7 +14,7 @@ import java.lang.ref.WeakReference
 
 class FormPartAdapter internal constructor(
     val globalAdapter: FormAdapter,
-    val style: Style
+    val partStyle: PartStyle
 ) : RecyclerView.Adapter<FormViewHolder>() {
 
     companion object {
@@ -26,6 +27,8 @@ class FormPartAdapter internal constructor(
 
     var adapterScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
         internal set
+
+    private val itemFactoryCache = FormItemFactoryCache()
 
     internal lateinit var creator: PartCreator
 
@@ -44,25 +47,29 @@ class FormPartAdapter internal constructor(
             oldItem.name == newItem.name && oldItem.field == newItem.field
     }).build())
 
+    private fun update() {
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FormViewHolder {
-        val realParent = style.onCreateItemParent(parent).let { styleParent ->
+        val styleLayout = partStyle.onCreateItemParent(parent)
+
+        val realParent = partStyle.onCreateItemParent(parent).let { styleParent ->
             globalAdapter.findItemViewTypeForInt(viewType).let {
-                (it?.typeset ?: style.defaultTypeset)?.onCreateItemTypesetParent(styleParent)
+                (it?.typeset ?: partStyle.defaultTypeset)?.onCreateItemTypesetParent(styleParent)
+                    ?: styleParent
             }
         }
         return FormViewHolder(realParent)
     }
 
     override fun onBindViewHolder(holder: FormViewHolder, position: Int) {
-        holder.itemView
-
-        getItem(position).also {
-            (it.typeset ?: style.defaultTypeset)?.onBindItemTypesetParent(
-                holder.itemView,
-                it
-            )
-            it.onBindItemView(this, holder)
-        }
+//        getItem(position).also {
+//            (it.typeset ?: style.defaultTypeset)?.onBindItemTypesetParent(
+//                holder.itemView,
+//                it
+//            )
+//            it.onBindItemView(this, holder)
+//        }
     }
 
     override fun onBindViewHolder(
@@ -77,11 +84,15 @@ class FormPartAdapter internal constructor(
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
-        return globalAdapter.getItemViewType(
-            style,
-            item.typeset ?: style.defaultTypeset,
+        val viewType = globalAdapter.getItemViewType(
+            partStyle,
+            item.typeset ?: partStyle.defaultTypeset,
             item
         )
+        if (!itemFactoryCache.contains(viewType)) {
+            itemFactoryCache.register(viewType, item)
+        }
+        return viewType
     }
 
     override fun getItemCount() = asyncDiffer.currentList.size

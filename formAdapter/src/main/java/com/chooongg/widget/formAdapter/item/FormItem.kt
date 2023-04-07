@@ -132,6 +132,25 @@ abstract class FormItem(
         }
     }
 
+    /**
+     * 检查内容是否合法
+     */
+    open fun checkIfTheContentIsLegal(): Boolean {
+        return content != null
+    }
+
+    /**
+     * 输出内容
+     */
+    open fun outputContent(adapter: FormPartAdapter) {
+        val isRealVisible = isRealVisible(adapter.globalAdapter.isEditable)
+        val isRealEnable = isRealEnable(adapter.globalAdapter.isEditable)
+        if (outputMode == FormOutputMode.VISIBLE && !isRealVisible) return
+        if (outputMode == FormOutputMode.VISIBLE_AND_ENABLED && !isRealVisible && !isRealEnable) return
+        if (outputMode == FormOutputMode.ENABLED && !isRealEnable) return
+        TODO()
+    }
+
     abstract fun onCreateItemView(adapter: FormPartAdapter, parent: ViewGroup): View
 
     abstract fun onBindItemView(adapter: FormPartAdapter, holder: FormViewHolder)

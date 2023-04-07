@@ -1,14 +1,15 @@
 package com.chooongg.widget.formAdapter
 
 import com.chooongg.widget.formAdapter.item.FormItem
-import com.chooongg.widget.formAdapter.style.Style
+import com.chooongg.widget.formAdapter.partStyle.PartStyle
 import com.chooongg.widget.formAdapter.typeset.Typeset
 
 /**
  * 项目类型
  */
 internal data class ItemViewType(
-    val style: Class<out Style>,
+    val partStyle: Class<out PartStyle>,
+
     val typeset: Typeset?,
     val item: Class<out FormItem>
 ) {
@@ -16,7 +17,7 @@ internal data class ItemViewType(
         if (this === other) return true
         if (other !is ItemViewType) return false
 
-        if (style != other.style) return false
+        if (partStyle != other.partStyle) return false
         if (typeset != null && other.typeset != null) {
             if (typeset::class != other.typeset::class) return false
         } else if (typeset == null && other.typeset != null) return false
@@ -27,7 +28,7 @@ internal data class ItemViewType(
     }
 
     override fun hashCode(): Int {
-        var result = style.hashCode()
+        var result = partStyle.hashCode()
         if (typeset != null) result = 31 * result + typeset::class.hashCode()
         result = 31 * result + item.hashCode()
         return result

@@ -10,7 +10,7 @@ class FormGroupTitle(name: CharSequence, field: String?) : FormItem(name, field)
     override var isNeedToTypeset: Boolean = false
 
     override fun onCreateItemView(adapter: FormPartAdapter, parent: ViewGroup): View {
-        adapter.getItem()
+        return View(parent.context)
     }
 
     override fun onBindItemView(adapter: FormPartAdapter, holder: FormViewHolder) {
@@ -22,4 +22,6 @@ class FormGroupTitle(name: CharSequence, field: String?) : FormItem(name, field)
         payloads: MutableList<Any>?
     ) {
     }
+
+    override fun equals(other: Any?) = false
 }

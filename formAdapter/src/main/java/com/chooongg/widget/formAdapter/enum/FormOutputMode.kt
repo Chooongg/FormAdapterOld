@@ -10,7 +10,17 @@ enum class FormOutputMode {
     ALWAYS,
 
     /**
-     * 仅可见时输出
+     * 可见时输出
      */
-    ONLY_VISIBLE,
+    VISIBLE,
+
+    /**
+     * 可见和启用时输出
+     */
+    VISIBLE_AND_ENABLED,
+
+    /**
+     * 启用时输出 (忽略可见性)
+     */
+    ENABLED
 }

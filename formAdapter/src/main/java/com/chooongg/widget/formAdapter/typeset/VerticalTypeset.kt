@@ -3,9 +3,11 @@ package com.chooongg.widget.formAdapter.typeset
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
+import com.chooongg.widget.formAdapter.FormViewHolder
+import com.chooongg.widget.formAdapter.R
 import com.chooongg.widget.formAdapter.item.FormItem
 
-object NormalVerticalTypeset : Typeset {
+object VerticalTypeset : Typeset {
     override fun onCreateItemTypesetParent(parent: ViewGroup): ViewGroup {
         return LinearLayoutCompat(parent.context).apply {
             orientation = LinearLayoutCompat.VERTICAL
@@ -13,7 +15,7 @@ object NormalVerticalTypeset : Typeset {
         }
     }
 
-    override fun onBindItemTypesetParent(parent: ViewGroup, item: FormItem) {
-        (parent.getChildAt(0) as AppCompatTextView).text = item.name
+    override fun onBindItemTypesetParent(holder: FormViewHolder, item: FormItem) {
+        holder.getView<AppCompatTextView>(R.id.formInternalNameTextView).text = item.name
     }
 }
