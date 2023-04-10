@@ -10,6 +10,7 @@ import com.chooongg.widget.formAdapter.enum.FormEnableMode
 import com.chooongg.widget.formAdapter.enum.FormOutputMode
 import com.chooongg.widget.formAdapter.enum.FormVisibilityMode
 import com.chooongg.widget.formAdapter.typeset.Typeset
+import org.json.JSONObject
 import kotlin.reflect.KClass
 
 abstract class FormItem(
@@ -99,6 +100,11 @@ abstract class FormItem(
     open var isShowOnEdge = true
 
     /**
+     * 是否单独一行
+     */
+    open var isSingleRow = false
+
+    /**
      * 是否需要排版
      */
     open var isNeedToTypeset = true
@@ -107,6 +113,48 @@ abstract class FormItem(
      * 排版样式
      */
     open var typeset: Typeset? = null
+
+    /**
+     * 自定义输出接口
+     */
+    private var customOutputBlock: ((json: JSONObject) -> Unit)? = null
+
+    /**
+     * 设置扩展内容
+     */
+    fun putExtensionContent(key: String, value: Any?) {
+        if (value != null) {
+            if (extensionFieldAndContent == null) extensionFieldAndContent = HashMap()
+            extensionFieldAndContent!![key] = value
+        } else if (extensionFieldAndContent != null) {
+            extensionFieldAndContent!!.remove(key)
+            if (extensionFieldAndContent!!.isEmpty()) extensionFieldAndContent = null
+        }
+    }
+
+    /**
+     * 获取扩展内容
+     */
+    fun getExtensionContent(key: String): Any? = extensionFieldAndContent?.get(key)
+
+    /**
+     * 是否有扩展内容
+     */
+    fun hasExtensionContent(key: String): Boolean =
+        extensionFieldAndContent?.containsKey(key) ?: false
+
+    /**
+     * 快照扩展字段和内容
+     */
+    fun snapshotExtensionFieldAndContent(): Map<String, Any?> =
+        extensionFieldAndContent?.toMap() ?: emptyMap()
+
+    /**
+     * 设置自定义输出监听
+     */
+    fun setCustomOutputListener(block: ((json: JSONObject) -> Unit)?) {
+        customOutputBlock = block
+    }
 
     /**
      * 真实的可见性
@@ -133,33 +181,43 @@ abstract class FormItem(
     }
 
     /**
-     * 检查内容是否合法
+     * 检查数据正确性
      */
-    open fun checkIfTheContentIsLegal(): Boolean {
+    open fun checkDataCorrectness(): Boolean {
         return content != null
     }
 
     /**
-     * 输出内容
+     * 执行输出
      */
-    open fun outputContent(adapter: FormPartAdapter) {
+    fun executeOutput(adapter: FormPartAdapter, json: JSONObject) {
         val isRealVisible = isRealVisible(adapter.globalAdapter.isEditable)
         val isRealEnable = isRealEnable(adapter.globalAdapter.isEditable)
         if (outputMode == FormOutputMode.VISIBLE && !isRealVisible) return
         if (outputMode == FormOutputMode.VISIBLE_AND_ENABLED && !isRealVisible && !isRealEnable) return
         if (outputMode == FormOutputMode.ENABLED && !isRealEnable) return
-        TODO()
+        if (customOutputBlock != null) {
+            customOutputBlock!!.invoke(json)
+            return
+        }
+        extensionFieldAndContent?.forEach {
+            json.put(it.key, it.value)
+        }
+    }
+
+    protected open fun outputData(adapter: FormPartAdapter, json: JSONObject) {
+        json.putOpt(field, content)
     }
 
     abstract fun onCreateItemView(adapter: FormPartAdapter, parent: ViewGroup): View
 
     abstract fun onBindItemView(adapter: FormPartAdapter, holder: FormViewHolder)
 
-    abstract fun onBindItemView(
+    open fun onBindItemView(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
         payloads: MutableList<Any>?
-    )
+    ) = onBindItemView(adapter, holder)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -180,6 +238,7 @@ abstract class FormItem(
         if (menuIconRes != other.menuIconRes) return false
         if (menuIcon != other.menuIcon) return false
         if (isShowOnEdge != other.isShowOnEdge) return false
+        if (isSingleRow != other.isSingleRow) return false
         if (isNeedToTypeset != other.isNeedToTypeset) return false
         if (typeset != other.typeset) return false
 
@@ -202,6 +261,7 @@ abstract class FormItem(
         result = 31 * result + (menuIconRes ?: 0)
         result = 31 * result + (menuIcon?.hashCode() ?: 0)
         result = 31 * result + isShowOnEdge.hashCode()
+        result = 31 * result + isSingleRow.hashCode()
         result = 31 * result + isNeedToTypeset.hashCode()
         result = 31 * result + (typeset?.hashCode() ?: 0)
         return result

@@ -1,24 +1,23 @@
-package com.chooongg.widget.formAdapter.partStyle
+package com.chooongg.widget.formAdapter.style
 
+import android.view.View
 import android.view.ViewGroup
 import com.chooongg.widget.formAdapter.FormViewHolder
+import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
 import com.chooongg.widget.formAdapter.typeset.Typeset
 
 /**
  * 表单项根样式
  */
-abstract class PartStyle(
-    /**
-     * 默认排版
-     */
-) {
+abstract class Style {
 
     /**
      * 默认排版
      */
     open var defaultTypeset: Typeset? = null
         protected set
+
 
     /**
      * 创建项目的样式布局
@@ -32,4 +31,14 @@ abstract class PartStyle(
      * @param parent Item的父布局
      */
     abstract fun onBindItemParentLayout(holder: FormViewHolder, item: FormItem)
+
+    /**
+     * 创建分组标题
+     */
+    abstract fun onCreateGroupTitle(parent: ViewGroup): View
+
+    /**
+     * 绑定分组标题
+     */
+    abstract fun onBindGroupTitle(holder: FormViewHolder, item: FormGroupTitle)
 }

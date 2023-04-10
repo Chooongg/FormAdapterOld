@@ -3,7 +3,7 @@ package com.chooongg.widget.formAdapter
 import androidx.collection.ArraySet
 import androidx.recyclerview.widget.ConcatAdapter
 import com.chooongg.widget.formAdapter.item.FormItem
-import com.chooongg.widget.formAdapter.partStyle.PartStyle
+import com.chooongg.widget.formAdapter.style.Style
 import com.chooongg.widget.formAdapter.typeset.Typeset
 
 abstract class BaseFormAdapter(isEditable: Boolean = false) {
@@ -19,8 +19,12 @@ abstract class BaseFormAdapter(isEditable: Boolean = false) {
 
     internal val itemTypeLookup = ArraySet<ItemViewType>()
 
-    internal fun getItemViewType(partStyle: PartStyle, typeset: Typeset?, item: FormItem): Int {
-        val itemType = ItemViewType(partStyle, typeset, item::class.java)
+    internal fun getItemViewType(style: Style, typeset: Typeset?, item: FormItem): Int {
+        val itemType = ItemViewType(
+            style::class.java,
+            if (typeset != null) typeset::class.java else null,
+            item::class.java
+        )
         if (!itemTypeLookup.contains(itemType)) {
             itemTypeLookup.add(itemType)
             return itemTypeLookup.size - 1
@@ -29,6 +33,8 @@ abstract class BaseFormAdapter(isEditable: Boolean = false) {
     }
 
     internal fun findItemViewTypeForInt(itemType: Int) = itemTypeLookup.valueAt(itemType)
+
+    internal fun indexPartOf(part:FormPartAdapter) = adapter.adapters.indexOf(part)
 
     fun clear() {
         adapter.adapters.forEach { adapter.removeAdapter(it) }

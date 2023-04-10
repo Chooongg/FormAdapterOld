@@ -39,4 +39,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation project(path: ':formAdapter')
+    debugImplementation 'com.facebook.flipper:flipper:0.189.0'
+    debugImplementation 'com.facebook.soloader:soloader:0.10.5'
+    releaseImplementation 'com.facebook.flipper:flipper-noop:0.189.0'
 }

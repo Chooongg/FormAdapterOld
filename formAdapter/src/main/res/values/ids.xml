@@ -5,4 +5,5 @@
     <item name="formInternalContentLayout" type="id" />
     <item name="formInternalNameTextView" type="id" />
     <item name="formInternalMenuButton" type="id" />
+    <item name="formContent" type="id" />
 </resources>

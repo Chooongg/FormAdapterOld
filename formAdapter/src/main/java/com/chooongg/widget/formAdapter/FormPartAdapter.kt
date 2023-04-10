@@ -1,11 +1,14 @@
 package com.chooongg.widget.formAdapter
 
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.*
 import com.chooongg.widget.formAdapter.creator.PartCreator
+import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
 import com.chooongg.widget.formAdapter.item.FormItemFactoryCache
-import com.chooongg.widget.formAdapter.partStyle.PartStyle
+import com.chooongg.widget.formAdapter.style.Style
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -13,8 +16,8 @@ import kotlinx.coroutines.cancel
 import java.lang.ref.WeakReference
 
 class FormPartAdapter internal constructor(
-    val globalAdapter: FormAdapter,
-    val partStyle: PartStyle
+    val globalAdapter: BaseFormAdapter,
+    val style: Style
 ) : RecyclerView.Adapter<FormViewHolder>() {
 
     companion object {
@@ -47,29 +50,73 @@ class FormPartAdapter internal constructor(
             oldItem.name == newItem.name && oldItem.field == newItem.field
     }).build())
 
-    private fun update() {
+    fun submitList(block: PartCreator.() -> Unit) {
+        submitList(PartCreator().apply(block))
+    }
+
+    fun submitList(creator: PartCreator) {
+        adapterScope.cancel()
+        adapterScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        this.creator = creator
+        update()
+    }
+
+    fun update() {
+        if (!this::creator.isInitialized) {
+            asyncDiffer.submitList(null)
+            return
+        }
+        val partIndex = globalAdapter.indexPartOf(this)
+        val tempList = mutableListOf<MutableList<FormItem>>()
+        creator.partList.forEachIndexed { groupIndex, group ->
+            val groupList = ArrayList<FormItem>()
+            val partName = if (creator.dynamicPart) {
+                creator.dynamicPartNameFormatBlock?.invoke(creator.partName, groupIndex)
+                    ?: "${creator.partName ?: ""}${groupIndex + 1}"
+            } else creator.partName
+            if (creator.partName != null || creator.dynamicPart) {
+                groupList.add(FormGroupTitle(partName ?: "", null).apply {
+
+                })
+            }
+            group@ for (item in group) {
+                if (!item.isRealVisible(globalAdapter.isEditable)) continue@group
+                groupList.add(item)
+            }
+            while (groupList.size > 0 && !groupList[0].isShowOnEdge) {
+                groupList.removeAt(0)
+            }
+            while (groupList.size > 1 && !groupList[groupList.lastIndex].isShowOnEdge) {
+                groupList.removeAt(groupList.lastIndex)
+            }
+            tempList.add(groupList)
+        }
+        asyncDiffer.submitList(ArrayList<FormItem>().apply { tempList.forEach { addAll(it) } })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FormViewHolder {
-        val styleLayout = partStyle.onCreateItemParent(parent)
-
-        val realParent = partStyle.onCreateItemParent(parent).let { styleParent ->
-            globalAdapter.findItemViewTypeForInt(viewType).let {
-                (it?.typeset ?: partStyle.defaultTypeset)?.onCreateItemTypesetParent(styleParent)
-                    ?: styleParent
-            }
-        }
-        return FormViewHolder(realParent)
+        val styleLayout = style.onCreateItemParent(parent)
+        val item = itemFactoryCache.get(viewType)
+        val typesetLayout = if (item.isNeedToTypeset) {
+            (item.typeset ?: style.defaultTypeset)
+                ?.onCreateItemTypesetParent(styleLayout ?: parent)
+        } else null
+        if (styleLayout != null && typesetLayout != null) styleLayout.addView(typesetLayout)
+        val view = item.onCreateItemView(this, typesetLayout ?: styleLayout ?: parent)
+        if ((typesetLayout ?: styleLayout) != null) (typesetLayout ?: styleLayout)!!.addView(view)
+        return FormViewHolder(styleLayout ?: typesetLayout ?: view)
     }
 
     override fun onBindViewHolder(holder: FormViewHolder, position: Int) {
-//        getItem(position).also {
-//            (it.typeset ?: style.defaultTypeset)?.onBindItemTypesetParent(
-//                holder.itemView,
-//                it
-//            )
-//            it.onBindItemView(this, holder)
-//        }
+        val item = getItem(position)
+        holder.itemView.updateLayoutParams<LayoutParams> {
+            width = if (item.isSingleRow) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
+        }
+        style.onBindItemParentLayout(holder, item)
+        if (item.isNeedToTypeset) {
+            (item.typeset ?: style.defaultTypeset)?.onBindItemTypesetParent(holder, item)
+        }
+        item.onBindItemView(this, holder)
     }
 
     override fun onBindViewHolder(
@@ -85,8 +132,8 @@ class FormPartAdapter internal constructor(
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
         val viewType = globalAdapter.getItemViewType(
-            partStyle,
-            item.typeset ?: partStyle.defaultTypeset,
+            style,
+            item.typeset ?: style.defaultTypeset,
             item
         )
         if (!itemFactoryCache.contains(viewType)) {
