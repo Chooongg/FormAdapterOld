@@ -19,7 +19,7 @@ object HorizontalTypeset : Typeset {
             addView(
                 MaterialTextView(context).apply {
                     id = R.id.formInternalNameTextView
-                    setEms(2)
+                    setEms(4)
                 }, LinearLayoutCompat.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
                 )

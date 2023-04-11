@@ -2,6 +2,7 @@ package com.chooongg.widget.formAdapter.item
 
 import android.view.View
 import android.view.ViewGroup
+import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
@@ -15,7 +16,11 @@ class FormText(name: CharSequence, field: String?) : FormItem(name, field) {
         }
     }
 
-    override fun onBindItemView(adapter: FormPartAdapter, holder: FormViewHolder) {
+    override fun onBindItemView(
+        adapter: FormPartAdapter,
+        holder: FormViewHolder,
+        boundary: Boundary
+    ) {
         holder.getView<MaterialTextView>(R.id.formContent).also {
             it.text = content?.toString()
             it.hint = hint ?: "空"

@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
+import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.enum.FormEnableMode
@@ -211,13 +212,18 @@ abstract class FormItem(
 
     abstract fun onCreateItemView(adapter: FormPartAdapter, parent: ViewGroup): View
 
-    abstract fun onBindItemView(adapter: FormPartAdapter, holder: FormViewHolder)
+    abstract fun onBindItemView(
+        adapter: FormPartAdapter,
+        holder: FormViewHolder,
+        boundary: Boundary
+    )
 
     open fun onBindItemView(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
+        boundary: Boundary,
         payloads: MutableList<Any>?
-    ) = onBindItemView(adapter, holder)
+    ) = onBindItemView(adapter, holder, boundary)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

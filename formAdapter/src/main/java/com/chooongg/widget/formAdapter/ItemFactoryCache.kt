@@ -1,8 +1,9 @@
-package com.chooongg.widget.formAdapter.item
+package com.chooongg.widget.formAdapter
 
 import android.util.SparseArray
+import com.chooongg.widget.formAdapter.item.FormItem
 
-class FormItemFactoryCache {
+internal class ItemFactoryCache {
 
     private val typeInstances = SparseArray<FormItem>()
 

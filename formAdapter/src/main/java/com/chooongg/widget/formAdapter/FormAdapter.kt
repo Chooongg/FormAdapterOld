@@ -1,11 +1,12 @@
 package com.chooongg.widget.formAdapter
 
-import android.view.ViewGroup
+import android.content.res.Resources
 import androidx.recyclerview.widget.RecyclerView
 import com.chooongg.widget.formAdapter.creator.PartCreator
 import com.chooongg.widget.formAdapter.style.NoneStyle
 import com.chooongg.widget.formAdapter.style.Style
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import java.lang.ref.WeakReference
 
 class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
@@ -14,11 +15,8 @@ class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
 
     fun bind(recyclerView: RecyclerView) {
         _recyclerView = WeakReference(recyclerView)
-        recyclerView.layoutManager = object : FlexboxLayoutManager(recyclerView.context) {
-            override fun generateDefaultLayoutParams() = LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply { flexGrow = 1f }
+        recyclerView.layoutManager = FlexboxLayoutManager(recyclerView.context).apply {
+            justifyContent = JustifyContent.CENTER
         }
         recyclerView.adapter = adapter
     }
@@ -28,4 +26,7 @@ class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
             submitList(block)
         })
     }
+
+    private fun dp2px(dp: Float) =
+        (dp * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 }

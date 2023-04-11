@@ -1,14 +1,14 @@
 package com.chooongg.widget.formAdapter
 
+import android.content.res.Resources
+import android.util.Log
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
-import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.*
 import com.chooongg.widget.formAdapter.creator.PartCreator
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
-import com.chooongg.widget.formAdapter.item.FormItemFactoryCache
 import com.chooongg.widget.formAdapter.style.Style
+import com.google.android.flexbox.FlexboxLayoutManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -31,7 +31,7 @@ class FormPartAdapter internal constructor(
     var adapterScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
         internal set
 
-    private val itemFactoryCache = FormItemFactoryCache()
+    private val itemFactoryCache = ItemFactoryCache()
 
     internal lateinit var creator: PartCreator
 
@@ -62,6 +62,7 @@ class FormPartAdapter internal constructor(
     }
 
     fun update() {
+        itemFactoryCache.clear()
         if (!this::creator.isInitialized) {
             asyncDiffer.submitList(null)
             return
@@ -108,15 +109,12 @@ class FormPartAdapter internal constructor(
     }
 
     override fun onBindViewHolder(holder: FormViewHolder, position: Int) {
-        val item = getItem(position)
-        holder.itemView.updateLayoutParams<LayoutParams> {
-            width = if (item.isSingleRow) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
+        val boundary = getItemBoundary(holder)
+        getItem(position).also {
+            onBindParentViewHolder(holder, it, boundary)
+            it.onBindItemView(this, holder, boundary)
         }
-        style.onBindItemParentLayout(holder, item)
-        if (item.isNeedToTypeset) {
-            (item.typeset ?: style.defaultTypeset)?.onBindItemTypesetParent(holder, item)
-        }
-        item.onBindItemView(this, holder)
+        GridLayoutManager.LayoutParams(-1,-1).spanIndex
     }
 
     override fun onBindViewHolder(
@@ -124,7 +122,22 @@ class FormPartAdapter internal constructor(
         position: Int,
         payloads: MutableList<Any>
     ) {
-        getItem(position).onBindItemView(this, holder, payloads)
+        val boundary = getItemBoundary(holder)
+        getItem(position).also {
+            onBindParentViewHolder(holder, it, boundary)
+            it.onBindItemView(this, holder, boundary, payloads)
+        }
+    }
+
+    private fun onBindParentViewHolder(holder: FormViewHolder, item: FormItem, boundary: Boundary) {
+        holder.itemView.layoutParams =
+            FlexboxLayoutManager.LayoutParams(if (item.isSingleRow) -1 else -2, -2).apply {
+                flexGrow = 1f
+            }
+        style.onBindItemParentLayout(holder, item, getItemBoundary(holder))
+        if (item.isNeedToTypeset) {
+            (item.typeset ?: style.defaultTypeset)?.onBindItemTypesetParent(holder, item)
+        }
     }
 
     private fun getItem(position: Int) = asyncDiffer.currentList[position]
@@ -153,4 +166,42 @@ class FormPartAdapter internal constructor(
         adapterScope.cancel()
         adapterScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     }
+
+    private fun getItemBoundary(holder: FormViewHolder): Boundary {
+        val layoutManager = recyclerView?.layoutManager ?: return Boundary()
+        if (layoutManager is FlexboxLayoutManager) {
+            var left = Boundary.NONE
+            var top = Boundary.NONE
+            var right = Boundary.NONE
+            var bottom = Boundary.NONE
+            var index = 0
+            Log.e("ItemDecoration", "----------")
+            Log.e("ItemDecoration", holder.absoluteAdapterPosition.toString())
+            for (flexLine in layoutManager.flexLinesInternal) {
+                Log.e("ItemDecoration", "flexLine: $flexLine")
+                if (holder.absoluteAdapterPosition >= index && holder.absoluteAdapterPosition < index + flexLine.itemCountNotGone) {
+                    if (flexLine.itemCountNotGone == 1) {
+                        left = Boundary.GLOBAL
+                        right = Boundary.GLOBAL
+                    } else {
+                        if (holder.absoluteAdapterPosition == index) {
+                            left = Boundary.GLOBAL
+                            right = Boundary.NONE
+                        } else if (holder.absoluteAdapterPosition == index + flexLine.itemCount - 1) {
+                            left = Boundary.NONE
+                            right = Boundary.GLOBAL
+                        } else {
+                            left = Boundary.NONE
+                            right = Boundary.NONE
+                        }
+                    }
+                }
+                index += flexLine.itemCount
+            }
+            return Boundary(left, top, right, bottom)
+        } else return Boundary()
+    }
+
+    private fun dp2px(dp: Float) =
+        (dp * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 }
