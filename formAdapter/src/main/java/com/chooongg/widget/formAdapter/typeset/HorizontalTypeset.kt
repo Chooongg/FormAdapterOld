@@ -19,7 +19,6 @@ object HorizontalTypeset : Typeset {
             addView(
                 MaterialTextView(context).apply {
                     id = R.id.formInternalNameTextView
-                    setEms(4)
                 }, LinearLayoutCompat.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
                 )
@@ -28,6 +27,8 @@ object HorizontalTypeset : Typeset {
     }
 
     override fun onBindItemTypesetParent(holder: FormViewHolder, item: FormItem) {
-        holder.getView<MaterialTextView>(R.id.formInternalNameTextView).text = item.name
+//        with(holder.getView<MaterialTextView>(R.id.formInternalNameTextView)) {
+//            text = item.name
+//        }
     }
 }

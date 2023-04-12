@@ -8,8 +8,6 @@ import com.chooongg.widget.formAdapter.FormViewHolder
 
 class FormGroupTitle(name: CharSequence, field: String?) : FormItem(name, field) {
 
-    override var isSingleRow: Boolean = true
-
     override var isNeedToTypeset: Boolean = false
 
     override fun onCreateItemView(adapter: FormPartAdapter, parent: ViewGroup): View {
@@ -18,18 +16,16 @@ class FormGroupTitle(name: CharSequence, field: String?) : FormItem(name, field)
 
     override fun onBindItemView(
         adapter: FormPartAdapter,
-        holder: FormViewHolder,
-        boundary: Boundary
+        holder: FormViewHolder
     ) {
-        adapter.style.onBindGroupTitle(holder, this, boundary)
+        adapter.style.onBindGroupTitle(holder, this)
     }
 
     override fun onBindItemView(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
-        boundary: Boundary,
         payloads: MutableList<Any>?
     ) {
-        adapter.style.onBindGroupTitle(holder, this, boundary)
+        adapter.style.onBindGroupTitle(holder, this)
     }
 }

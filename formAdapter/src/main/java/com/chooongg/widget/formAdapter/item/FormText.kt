@@ -18,8 +18,7 @@ class FormText(name: CharSequence, field: String?) : FormItem(name, field) {
 
     override fun onBindItemView(
         adapter: FormPartAdapter,
-        holder: FormViewHolder,
-        boundary: Boundary
+        holder: FormViewHolder
     ) {
         holder.getView<MaterialTextView>(R.id.formContent).also {
             it.text = content?.toString()

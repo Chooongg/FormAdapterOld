@@ -14,14 +14,12 @@ abstract class BaseFormAdapter(isEditable: Boolean = false) {
             if (adapter.itemCount > 0) adapter.notifyItemRangeChanged(0, adapter.itemCount)
         }
 
-    internal val adapter =
-        ConcatAdapter(ConcatAdapter.Config.Builder().setIsolateViewTypes(false).build())
+    internal val adapter = ConcatAdapter()
 
     internal val itemTypeLookup = ArraySet<ItemViewType>()
 
     internal fun getItemViewType(style: Style, typeset: Typeset?, item: FormItem): Int {
         val itemType = ItemViewType(
-            style::class.java,
             if (typeset != null) typeset::class.java else null,
             item::class.java
         )

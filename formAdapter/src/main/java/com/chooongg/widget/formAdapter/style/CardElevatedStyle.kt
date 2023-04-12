@@ -30,9 +30,11 @@ object CardElevatedStyle : Style() {
 
     override fun onBindItemParentLayout(
         holder: FormViewHolder,
-        item: FormItem,
-        boundary: Boundary
+        item: FormItem
     ) {
+    }
+
+    override fun onViewAttachedToWindow(holder: FormViewHolder, boundary: Boundary) {
         holder.itemView.updateLayoutParams<RecyclerView.LayoutParams> {
             topMargin = when (boundary.top) {
                 Boundary.LOCAL -> dp2px(8f)
@@ -68,9 +70,22 @@ object CardElevatedStyle : Style() {
                 else -> 0
             }
         }
-//        with(holder.getView<MaterialCardView>(R.id.formInternalStyleLayout)) {
-//
-//        }
+        with(holder.getView<MaterialCardView>(R.id.formInternalStyleLayout)) {
+            val builder = shapeAppearanceModel.toBuilder()
+            if (boundary.top != 0 && boundary.left != 0) {
+                builder.setTopLeftCornerSize(dp2px(8f).toFloat())
+            } else builder.setTopLeftCornerSize(0f)
+            if (boundary.top != 0 && boundary.right != 0) {
+                builder.setTopRightCornerSize(dp2px(8f).toFloat())
+            } else builder.setTopRightCornerSize(0f)
+            if (boundary.bottom != 0 && boundary.left != 0) {
+                builder.setBottomLeftCornerSize(dp2px(8f).toFloat())
+            } else builder.setBottomLeftCornerSize(0f)
+            if (boundary.bottom != 0 && boundary.right != 0) {
+                builder.setBottomRightCornerSize(dp2px(8f).toFloat())
+            } else builder.setBottomRightCornerSize(0f)
+            shapeAppearanceModel = builder.build()
+        }
     }
 
     override fun onCreateGroupTitle(parent: ViewGroup) = TextView(parent.context).apply {
@@ -83,8 +98,7 @@ object CardElevatedStyle : Style() {
 
     override fun onBindGroupTitle(
         holder: FormViewHolder,
-        item: FormGroupTitle,
-        boundary: Boundary
+        item: FormGroupTitle
     ) {
         with(holder.getView<TextView>(R.id.formContent)) {
             text = item.name

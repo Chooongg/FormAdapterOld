@@ -101,11 +101,6 @@ abstract class FormItem(
     open var isShowOnEdge = true
 
     /**
-     * 是否单独一行
-     */
-    open var isSingleRow = false
-
-    /**
      * 是否需要排版
      */
     open var isNeedToTypeset = true
@@ -119,6 +114,15 @@ abstract class FormItem(
      * 自定义输出接口
      */
     private var customOutputBlock: ((json: JSONObject) -> Unit)? = null
+
+    @androidx.annotation.IntRange(from = 1, to = 5)
+    internal var spanSize = 1
+    internal var lineCount = 1
+    internal var isFirstLine = true
+    internal var isLastLine = true
+
+    var boundary: Boundary = Boundary()
+        internal set
 
     /**
      * 设置扩展内容
@@ -214,16 +218,14 @@ abstract class FormItem(
 
     abstract fun onBindItemView(
         adapter: FormPartAdapter,
-        holder: FormViewHolder,
-        boundary: Boundary
+        holder: FormViewHolder
     )
 
     open fun onBindItemView(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
-        boundary: Boundary,
         payloads: MutableList<Any>?
-    ) = onBindItemView(adapter, holder, boundary)
+    ) = onBindItemView(adapter, holder)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -244,7 +246,6 @@ abstract class FormItem(
         if (menuIconRes != other.menuIconRes) return false
         if (menuIcon != other.menuIcon) return false
         if (isShowOnEdge != other.isShowOnEdge) return false
-        if (isSingleRow != other.isSingleRow) return false
         if (isNeedToTypeset != other.isNeedToTypeset) return false
         if (typeset != other.typeset) return false
 
@@ -267,7 +268,6 @@ abstract class FormItem(
         result = 31 * result + (menuIconRes ?: 0)
         result = 31 * result + (menuIcon?.hashCode() ?: 0)
         result = 31 * result + isShowOnEdge.hashCode()
-        result = 31 * result + isSingleRow.hashCode()
         result = 31 * result + isNeedToTypeset.hashCode()
         result = 31 * result + (typeset?.hashCode() ?: 0)
         return result

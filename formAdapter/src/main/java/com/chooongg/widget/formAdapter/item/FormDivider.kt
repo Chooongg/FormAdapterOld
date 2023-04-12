@@ -13,6 +13,6 @@ class FormDivider(name: CharSequence, field: String?) : FormItem(name, field) {
         return MaterialDivider(parent.context)
     }
 
-    override fun onBindItemView(adapter: FormPartAdapter, holder: FormViewHolder, boundary: Boundary) {
+    override fun onBindItemView(adapter: FormPartAdapter, holder: FormViewHolder) {
     }
 }

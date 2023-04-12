@@ -1,2 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+
+    <dimen name="formVerticalPaddingLocal">8dp</dimen>
+    <dimen name="formVerticalPaddingGlobal">16dp</dimen>
+    <dimen name="formHorizontalPaddingLocal">8dp</dimen>
+    <dimen name="formHorizontalPaddingGlobal">16dp</dimen>
+
+    <dimen name="formVerticalMarginLocal">8dp</dimen>
+    <dimen name="formVerticalMarginGlobal">16dp</dimen>
+    <dimen name="formHorizontalMarginLocal">8dp</dimen>
+    <dimen name="formHorizontalMarginGlobal">16dp</dimen>
+
+</resources>

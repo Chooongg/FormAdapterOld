@@ -3,10 +3,12 @@ package com.chooongg.widget.formAdapter
 import android.content.res.Resources
 import android.util.Log
 import android.view.ViewGroup
+import androidx.collection.ArraySet
 import androidx.recyclerview.widget.*
 import com.chooongg.widget.formAdapter.creator.PartCreator
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
+import com.chooongg.widget.formAdapter.item.GroupForm
 import com.chooongg.widget.formAdapter.style.Style
 import com.google.android.flexbox.FlexboxLayoutManager
 import kotlinx.coroutines.CoroutineScope
@@ -32,6 +34,8 @@ class FormPartAdapter internal constructor(
         internal set
 
     private val itemFactoryCache = ItemFactoryCache()
+
+    internal val itemTypeLookup = ArraySet<ItemViewType>()
 
     internal lateinit var creator: PartCreator
 
@@ -82,7 +86,9 @@ class FormPartAdapter internal constructor(
             }
             group@ for (item in group) {
                 if (!item.isRealVisible(globalAdapter.isEditable)) continue@group
-                groupList.add(item)
+                if (item is GroupForm) {
+
+                } else groupList.add(item)
             }
             while (groupList.size > 0 && !groupList[0].isShowOnEdge) {
                 groupList.removeAt(0)
@@ -109,12 +115,10 @@ class FormPartAdapter internal constructor(
     }
 
     override fun onBindViewHolder(holder: FormViewHolder, position: Int) {
-        val boundary = getItemBoundary(holder)
         getItem(position).also {
-            onBindParentViewHolder(holder, it, boundary)
-            it.onBindItemView(this, holder, boundary)
+            onBindParentViewHolder(holder, it)
+            it.onBindItemView(this, holder)
         }
-        GridLayoutManager.LayoutParams(-1,-1).spanIndex
     }
 
     override fun onBindViewHolder(
@@ -122,36 +126,45 @@ class FormPartAdapter internal constructor(
         position: Int,
         payloads: MutableList<Any>
     ) {
-        val boundary = getItemBoundary(holder)
         getItem(position).also {
-            onBindParentViewHolder(holder, it, boundary)
-            it.onBindItemView(this, holder, boundary, payloads)
+            onBindParentViewHolder(holder, it)
+            it.onBindItemView(this, holder, payloads)
         }
     }
 
-    private fun onBindParentViewHolder(holder: FormViewHolder, item: FormItem, boundary: Boundary) {
-        holder.itemView.layoutParams =
-            FlexboxLayoutManager.LayoutParams(if (item.isSingleRow) -1 else -2, -2).apply {
-                flexGrow = 1f
-            }
-        style.onBindItemParentLayout(holder, item, getItemBoundary(holder))
+    private fun onBindParentViewHolder(holder: FormViewHolder, item: FormItem) {
+//        holder.itemView.layoutParams =
+//            FlexboxLayoutManager.LayoutParams(-1, -2).apply {
+//                flexGrow = 1f
+//            }
+        style.onBindItemParentLayout(holder, item)
         if (item.isNeedToTypeset) {
             (item.typeset ?: style.defaultTypeset)?.onBindItemTypesetParent(holder, item)
         }
     }
 
-    private fun getItem(position: Int) = asyncDiffer.currentList[position]
+    override fun onViewAttachedToWindow(holder: FormViewHolder) {
+        style.onViewAttachedToWindow(holder, getItemBoundary(holder))
+    }
+
+    fun getItem(position: Int) = asyncDiffer.currentList[position]
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
-        val viewType = globalAdapter.getItemViewType(
-            style,
-            item.typeset ?: style.defaultTypeset,
-            item
+        val typeset = item.typeset ?: style.defaultTypeset
+        val itemType = ItemViewType(
+            if (typeset != null) typeset::class.java else null,
+            item::class.java
         )
+        if (!itemTypeLookup.contains(itemType)) {
+            itemTypeLookup.add(itemType)
+        }
+        val viewType = itemTypeLookup.indexOf(itemType)
         if (!itemFactoryCache.contains(viewType)) {
             itemFactoryCache.register(viewType, item)
         }
+        Log.e("ViewType", viewType.toString())
+        Log.e("Item", item.toString())
         return viewType
     }
 
@@ -177,22 +190,26 @@ class FormPartAdapter internal constructor(
             var index = 0
             Log.e("ItemDecoration", "----------")
             Log.e("ItemDecoration", holder.absoluteAdapterPosition.toString())
-            for (flexLine in layoutManager.flexLinesInternal) {
+            for (flexLine in layoutManager.flexLines) {
                 Log.e("ItemDecoration", "flexLine: $flexLine")
                 if (holder.absoluteAdapterPosition >= index && holder.absoluteAdapterPosition < index + flexLine.itemCountNotGone) {
                     if (flexLine.itemCountNotGone == 1) {
                         left = Boundary.GLOBAL
                         right = Boundary.GLOBAL
                     } else {
-                        if (holder.absoluteAdapterPosition == index) {
-                            left = Boundary.GLOBAL
-                            right = Boundary.NONE
-                        } else if (holder.absoluteAdapterPosition == index + flexLine.itemCount - 1) {
-                            left = Boundary.NONE
-                            right = Boundary.GLOBAL
-                        } else {
-                            left = Boundary.NONE
-                            right = Boundary.NONE
+                        when (holder.absoluteAdapterPosition) {
+                            index -> {
+                                left = Boundary.GLOBAL
+                                right = Boundary.NONE
+                            }
+                            index + flexLine.itemCount - 1 -> {
+                                left = Boundary.NONE
+                                right = Boundary.GLOBAL
+                            }
+                            else -> {
+                                left = Boundary.NONE
+                                right = Boundary.NONE
+                            }
                         }
                     }
                 }
