@@ -115,13 +115,31 @@ abstract class FormItem(
      */
     private var customOutputBlock: ((json: JSONObject) -> Unit)? = null
 
-    @androidx.annotation.IntRange(from = 1, to = 5)
-    internal var spanSize = 1
-    internal var lineCount = 1
-    internal var isFirstLine = true
-    internal var isLastLine = true
+    /**
+     * 跨度权重
+     */
+    @androidx.annotation.IntRange(from = 1, to = 24)
+    var spanWeight = 1
 
+    /**
+     * 边界信息
+     */
     var boundary: Boundary = Boundary()
+        internal set
+
+    internal var spanSize = 120
+
+    var singleLineCount = 1
+        internal set
+    var singleLineIndex = 0
+        internal set
+
+    /**
+     * 动态组索引
+     */
+    var groupIndex = -1
+        internal set
+    var itemPosition = -1
         internal set
 
     /**
@@ -218,58 +236,14 @@ abstract class FormItem(
 
     abstract fun onBindItemView(
         adapter: FormPartAdapter,
-        holder: FormViewHolder
+        holder: FormViewHolder,
+        boundary: Boundary
     )
 
     open fun onBindItemView(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
+        boundary: Boundary,
         payloads: MutableList<Any>?
-    ) = onBindItemView(adapter, holder)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is FormItem) return false
-
-        if (name != other.name) return false
-        if (field != other.field) return false
-        if (extensionFieldAndContent != other.extensionFieldAndContent) return false
-        if (readOnlyType != other.readOnlyType) return false
-        if (hint != other.hint) return false
-        if (content != other.content) return false
-        if (isRequired != other.isRequired) return false
-        if (visibilityMode != other.visibilityMode) return false
-        if (enableMode != other.enableMode) return false
-        if (outputMode != other.outputMode) return false
-        if (isShowMenu != other.isShowMenu) return false
-        if (menuText != other.menuText) return false
-        if (menuIconRes != other.menuIconRes) return false
-        if (menuIcon != other.menuIcon) return false
-        if (isShowOnEdge != other.isShowOnEdge) return false
-        if (isNeedToTypeset != other.isNeedToTypeset) return false
-        if (typeset != other.typeset) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = name.hashCode()
-        result = 31 * result + (field?.hashCode() ?: 0)
-        result = 31 * result + (extensionFieldAndContent?.hashCode() ?: 0)
-        result = 31 * result + readOnlyType.hashCode()
-        result = 31 * result + (hint?.hashCode() ?: 0)
-        result = 31 * result + (content?.hashCode() ?: 0)
-        result = 31 * result + isRequired.hashCode()
-        result = 31 * result + visibilityMode.hashCode()
-        result = 31 * result + enableMode.hashCode()
-        result = 31 * result + outputMode.hashCode()
-        result = 31 * result + isShowMenu.hashCode()
-        result = 31 * result + (menuText?.hashCode() ?: 0)
-        result = 31 * result + (menuIconRes ?: 0)
-        result = 31 * result + (menuIcon?.hashCode() ?: 0)
-        result = 31 * result + isShowOnEdge.hashCode()
-        result = 31 * result + isNeedToTypeset.hashCode()
-        result = 31 * result + (typeset?.hashCode() ?: 0)
-        return result
-    }
+    ) = onBindItemView(adapter, holder, boundary)
 }

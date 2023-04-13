@@ -1,7 +1,5 @@
 package com.chooongg.widget.formAdapter
 
-import android.content.res.Resources
-import android.util.Log
 import android.view.ViewGroup
 import androidx.collection.ArraySet
 import androidx.recyclerview.widget.*
@@ -10,7 +8,6 @@ import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
 import com.chooongg.widget.formAdapter.item.GroupForm
 import com.chooongg.widget.formAdapter.style.Style
-import com.google.android.flexbox.FlexboxLayoutManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -49,9 +46,9 @@ class FormPartAdapter internal constructor(
             notifyItemMoved(fromPosition, toPosition)
 
     }, AsyncDifferConfig.Builder(object : DiffUtil.ItemCallback<FormItem>() {
-        override fun areContentsTheSame(oldItem: FormItem, newItem: FormItem) = oldItem == newItem
+        override fun areContentsTheSame(oldItem: FormItem, newItem: FormItem) = false
         override fun areItemsTheSame(oldItem: FormItem, newItem: FormItem) =
-            oldItem.name == newItem.name && oldItem.field == newItem.field
+            oldItem.name == newItem.name && oldItem.field == newItem.field && oldItem.groupIndex == newItem.groupIndex
     }).build())
 
     fun submitList(block: PartCreator.() -> Unit) {
@@ -73,7 +70,14 @@ class FormPartAdapter internal constructor(
         }
         val partIndex = globalAdapter.indexPartOf(this)
         val tempList = mutableListOf<MutableList<FormItem>>()
-        creator.partList.forEachIndexed { groupIndex, group ->
+        if (creator.dynamicPart) {
+            if (creator.groups.size < creator.dynamicPartMinGroupCount) {
+                if (creator.dynamicPartCreateGroupBlock != null) {
+                    creator.createGroup { creator.dynamicPartCreateGroupBlock!!.invoke(this) }
+                }
+            }
+        }
+        creator.groups.forEachIndexed { groupIndex, group ->
             val groupList = ArrayList<FormItem>()
             val partName = if (creator.dynamicPart) {
                 creator.dynamicPartNameFormatBlock?.invoke(creator.partName, groupIndex)
@@ -85,9 +89,34 @@ class FormPartAdapter internal constructor(
                 })
             }
             group@ for (item in group) {
+                item.groupIndex = -1
                 if (!item.isRealVisible(globalAdapter.isEditable)) continue@group
                 if (item is GroupForm) {
-
+                    val singleGroup = ArrayList<FormItem>()
+                    singleLine@ for (it in item.items) {
+                        if (!it.isRealVisible(globalAdapter.isEditable)) continue@singleLine
+                        singleGroup.add(it)
+                    }
+                    if (singleGroup.isEmpty()) continue@group
+                    var maxWidget = 0
+                    singleGroup.forEachIndexed { index, formItem ->
+                        maxWidget += formItem.spanWeight
+                        formItem.singleLineCount = singleGroup.size
+                        formItem.singleLineIndex = index
+                        groupList.add(formItem)
+                    }
+                    if (singleGroup.size == 1) {
+                        singleGroup[0].spanSize = 120
+                    } else {
+                        singleGroup.forEach {
+                            it.spanSize = (120 / maxWidget) * it.spanWeight
+                        }
+                        if (120 % maxWidget != 0) {
+                            for (i in 0 until 120 % maxWidget) {
+                                singleGroup[i % singleGroup.size].spanSize += 1
+                            }
+                        }
+                    }
                 } else groupList.add(item)
             }
             while (groupList.size > 0 && !groupList[0].isShowOnEdge) {
@@ -96,7 +125,46 @@ class FormPartAdapter internal constructor(
             while (groupList.size > 1 && !groupList[groupList.lastIndex].isShowOnEdge) {
                 groupList.removeAt(groupList.lastIndex)
             }
+            groupList.forEachIndexed { index, formItem ->
+                formItem.boundary.top = if (index == 0) {
+                    if (partIndex == 0) Boundary.GLOBAL else Boundary.LOCAL
+                } else Boundary.NONE
+                if (formItem.singleLineCount > 1) {
+                    if (formItem.singleLineIndex == 0) {
+                        formItem.boundary.start = Boundary.GLOBAL
+                    } else {
+                        formItem.boundary.top =
+                            groupList[index - formItem.singleLineCount + formItem.singleLineIndex].boundary.top
+                        formItem.boundary.start = Boundary.NONE
+                    }
+                } else {
+                    formItem.boundary.start = Boundary.GLOBAL
+                    formItem.boundary.end = Boundary.GLOBAL
+                }
+            }
+            for (i in groupList.lastIndex downTo 0) {
+                groupList[i].boundary.bottom = if (i == groupList.lastIndex) {
+                    if (partIndex == globalAdapter.adapter.adapters.lastIndex) Boundary.GLOBAL else Boundary.LOCAL
+                } else Boundary.NONE
+                if (groupList[i].singleLineCount > 1) {
+                    if (groupList[i].singleLineIndex == groupList[i].singleLineCount - 1) {
+                        groupList[i].boundary.end = Boundary.GLOBAL
+                    } else {
+                        groupList[i].boundary.bottom =
+                            groupList[i + groupList[i].singleLineCount - groupList[i].singleLineIndex - 1].boundary.bottom
+                        groupList[i].boundary.end = Boundary.NONE
+                    }
+                }
+            }
             tempList.add(groupList)
+        }
+        if (creator.dynamicPart) {
+            tempList.forEachIndexed { index, group ->
+                group.forEachIndexed { position, item ->
+                    item.groupIndex = index
+                    item.itemPosition = position
+                }
+            }
         }
         asyncDiffer.submitList(ArrayList<FormItem>().apply { tempList.forEach { addAll(it) } })
     }
@@ -110,14 +178,17 @@ class FormPartAdapter internal constructor(
         } else null
         if (styleLayout != null && typesetLayout != null) styleLayout.addView(typesetLayout)
         val view = item.onCreateItemView(this, typesetLayout ?: styleLayout ?: parent)
-        if ((typesetLayout ?: styleLayout) != null) (typesetLayout ?: styleLayout)!!.addView(view)
+        if ((typesetLayout ?: styleLayout) != null) (typesetLayout ?: styleLayout)!!.addView(
+            view
+        )
         return FormViewHolder(styleLayout ?: typesetLayout ?: view)
     }
 
     override fun onBindViewHolder(holder: FormViewHolder, position: Int) {
         getItem(position).also {
-            onBindParentViewHolder(holder, it)
-            it.onBindItemView(this, holder)
+            val boundary = getItemBoundary(holder, it)
+            onBindParentViewHolder(holder, it, boundary)
+            it.onBindItemView(this, holder, boundary)
         }
     }
 
@@ -127,24 +198,17 @@ class FormPartAdapter internal constructor(
         payloads: MutableList<Any>
     ) {
         getItem(position).also {
-            onBindParentViewHolder(holder, it)
-            it.onBindItemView(this, holder, payloads)
+            val boundary = getItemBoundary(holder, it)
+            onBindParentViewHolder(holder, it, boundary)
+            it.onBindItemView(this, holder, boundary, payloads)
         }
     }
 
-    private fun onBindParentViewHolder(holder: FormViewHolder, item: FormItem) {
-//        holder.itemView.layoutParams =
-//            FlexboxLayoutManager.LayoutParams(-1, -2).apply {
-//                flexGrow = 1f
-//            }
-        style.onBindItemParentLayout(holder, item)
+    private fun onBindParentViewHolder(holder: FormViewHolder, item: FormItem, boundary: Boundary) {
+        style.onBindItemParentLayout(holder, item, boundary)
         if (item.isNeedToTypeset) {
             (item.typeset ?: style.defaultTypeset)?.onBindItemTypesetParent(holder, item)
         }
-    }
-
-    override fun onViewAttachedToWindow(holder: FormViewHolder) {
-        style.onViewAttachedToWindow(holder, getItemBoundary(holder))
     }
 
     fun getItem(position: Int) = asyncDiffer.currentList[position]
@@ -163,8 +227,6 @@ class FormPartAdapter internal constructor(
         if (!itemFactoryCache.contains(viewType)) {
             itemFactoryCache.register(viewType, item)
         }
-        Log.e("ViewType", viewType.toString())
-        Log.e("Item", item.toString())
         return viewType
     }
 
@@ -180,45 +242,24 @@ class FormPartAdapter internal constructor(
         adapterScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     }
 
-    private fun getItemBoundary(holder: FormViewHolder): Boundary {
-        val layoutManager = recyclerView?.layoutManager ?: return Boundary()
-        if (layoutManager is FlexboxLayoutManager) {
-            var left = Boundary.NONE
-            var top = Boundary.NONE
-            var right = Boundary.NONE
-            var bottom = Boundary.NONE
-            var index = 0
-            Log.e("ItemDecoration", "----------")
-            Log.e("ItemDecoration", holder.absoluteAdapterPosition.toString())
-            for (flexLine in layoutManager.flexLines) {
-                Log.e("ItemDecoration", "flexLine: $flexLine")
-                if (holder.absoluteAdapterPosition >= index && holder.absoluteAdapterPosition < index + flexLine.itemCountNotGone) {
-                    if (flexLine.itemCountNotGone == 1) {
-                        left = Boundary.GLOBAL
-                        right = Boundary.GLOBAL
-                    } else {
-                        when (holder.absoluteAdapterPosition) {
-                            index -> {
-                                left = Boundary.GLOBAL
-                                right = Boundary.NONE
-                            }
-                            index + flexLine.itemCount - 1 -> {
-                                left = Boundary.NONE
-                                right = Boundary.GLOBAL
-                            }
-                            else -> {
-                                left = Boundary.NONE
-                                right = Boundary.NONE
-                            }
-                        }
-                    }
-                }
-                index += flexLine.itemCount
-            }
-            return Boundary(left, top, right, bottom)
-        } else return Boundary()
+    private fun getItemBoundary(holder: FormViewHolder, item: FormItem): Boundary {
+        return Boundary(
+            if (item.singleLineCount == 1 || item.singleLineIndex == 0) {
+                Boundary.GLOBAL
+            } else Boundary.NONE,
+            if (holder.absoluteAdapterPosition == 0) {
+                Boundary.GLOBAL
+            } else if (holder.bindingAdapterPosition == 0) {
+                Boundary.LOCAL
+            } else Boundary.NONE,
+            if (item.singleLineCount == 1 || item.singleLineIndex == item.singleLineCount - 1) {
+                Boundary.GLOBAL
+            } else Boundary.NONE,
+            if (holder.absoluteAdapterPosition == globalAdapter.adapter.itemCount - 1) {
+                Boundary.GLOBAL
+            } else if (holder.bindingAdapterPosition == itemCount - 1) {
+                Boundary.LOCAL
+            } else Boundary.NONE
+        )
     }
-
-    private fun dp2px(dp: Float) =
-        (dp * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 }

@@ -20,7 +20,8 @@ class FormButton(name: CharSequence, field: String?) : FormItem(name, field) {
 
     override fun onBindItemView(
         adapter: FormPartAdapter,
-        holder: FormViewHolder
+        holder: FormViewHolder,
+        boundary: Boundary
     ) {
         with(holder.getView<MaterialButton>(R.id.formContent)) {
             text = name
@@ -30,6 +31,7 @@ class FormButton(name: CharSequence, field: String?) : FormItem(name, field) {
     override fun onBindItemView(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
+        boundary: Boundary,
         payloads: MutableList<Any>?
     ) {
 

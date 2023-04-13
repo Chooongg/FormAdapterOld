@@ -4,7 +4,7 @@ import com.chooongg.widget.formAdapter.item.FormItem
 
 class PartCreator {
 
-    internal val partList = mutableListOf<MutableList<out FormItem>>()
+    internal val groups = mutableListOf<MutableList<out FormItem>>()
 
     /**
      * 片段名称
@@ -47,7 +47,7 @@ class PartCreator {
      * 添加组
      */
     fun createGroup(block: GroupCreator.() -> Unit) {
-        partList.add(GroupCreator().apply(block).groupList)
+        groups.add(GroupCreator().apply(block).items)
     }
 
     /**

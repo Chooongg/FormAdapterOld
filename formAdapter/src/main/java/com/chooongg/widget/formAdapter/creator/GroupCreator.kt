@@ -3,21 +3,23 @@ package com.chooongg.widget.formAdapter.creator
 import com.chooongg.widget.formAdapter.item.FormItem
 import com.chooongg.widget.formAdapter.item.GroupForm
 
-class GroupCreator {
+open class GroupCreator {
 
-    internal val groupList = mutableListOf<FormItem>()
+    internal val items = mutableListOf<FormItem>()
 
     fun add(item: FormItem) {
-        groupList.add(item)
+        items.add(item)
     }
 
-    fun addSingleLine(block: GroupCreator.() -> Unit) {
-        val creator = GroupCreator().apply(block)
-        creator.groupList.forEach {
-            if (it is GroupForm) throw IllegalArgumentException("GroupForm can not be added to SingleLine")
+    fun addSingleLine(block: GroupFormCreator.() -> Unit) {
+        val creator = GroupFormCreator().apply(block)
+        creator.items.forEachIndexed { index, formItem ->
+            if (index >= 5) throw IndexOutOfBoundsException("SingleLine can not have more than 5 items")
+            if (formItem is GroupForm) throw IllegalArgumentException("GroupForm can not be added to SingleLine")
+            formItem.isShowOnEdge = creator.isShowOnEdge
         }
-        groupList.add(GroupForm().apply {
-            items = ArrayList(creator.groupList)
+        items.add(GroupForm().apply {
+            items = ArrayList(creator.items)
         })
     }
 }

@@ -7,10 +7,10 @@ import com.chooongg.widget.formAdapter.enum.FormBoundary
  * 边界信息
  */
 data class Boundary(
-    @BoundaryType val left: Int,
-    @BoundaryType val top: Int,
-    @BoundaryType val right: Int,
-    @BoundaryType val bottom: Int
+    @BoundaryType var start: Int,
+    @BoundaryType var top: Int,
+    @BoundaryType var end: Int,
+    @BoundaryType var bottom: Int
 ) {
     constructor() : this(NONE)
     constructor(any: Int) : this(any, any, any, any)

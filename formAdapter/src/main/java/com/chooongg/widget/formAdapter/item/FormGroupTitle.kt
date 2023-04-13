@@ -16,16 +16,18 @@ class FormGroupTitle(name: CharSequence, field: String?) : FormItem(name, field)
 
     override fun onBindItemView(
         adapter: FormPartAdapter,
-        holder: FormViewHolder
+        holder: FormViewHolder,
+        boundary: Boundary
     ) {
-        adapter.style.onBindGroupTitle(holder, this)
+        adapter.style.onBindGroupTitle(holder, this, boundary)
     }
 
     override fun onBindItemView(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
+        boundary: Boundary,
         payloads: MutableList<Any>?
     ) {
-        adapter.style.onBindGroupTitle(holder, this)
+        adapter.style.onBindGroupTitle(holder, this, boundary)
     }
 }

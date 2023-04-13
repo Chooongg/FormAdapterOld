@@ -1,9 +1,11 @@
 package com.chooongg.widget.formAdapter
 
 import android.content.res.Resources
+import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
+import com.chooongg.widget.formAdapter.creator.FormCreator
 import com.chooongg.widget.formAdapter.creator.PartCreator
 import com.chooongg.widget.formAdapter.style.NoneStyle
 import com.chooongg.widget.formAdapter.style.Style
@@ -22,19 +24,52 @@ class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
                     val adapter = pair.first
                     return if (adapter is FormPartAdapter) {
                         val item = adapter.getItem(pair.second)
+                        Log.e(
+                            "GridLayoutManager",
+                            "position = $position, spanSize = ${item.spanSize}"
+                        )
+                        item.spanSize
+                    } else {
+                        Log.e("GridLayoutManager", "position = $position, spanSize = ${120}")
                         120
-                    } else 120
+                    }
                 }
             }
         }
         recyclerView.adapter = adapter
-        recyclerView.setPaddingRelative(30, 0, 30, 0)
+        for (i in recyclerView.itemDecorationCount - 1 downTo 0) {
+            if (recyclerView.getItemDecorationAt(i) is FormItemDecoration) {
+                recyclerView.removeItemDecorationAt(i)
+            }
+        }
+        recyclerView.addItemDecoration(FormItemDecoration(recyclerView.context, this))
+    }
+
+    fun setNewInstance(block: FormCreator.() -> Unit) {
+        clear()
+        val creator = FormCreator().apply(block)
+        creator.parts.forEach {
+            adapter.addAdapter(FormPartAdapter(this, it.first))
+        }
+        creator.parts.forEachIndexed { index, pair ->
+            (adapter.adapters[index] as FormPartAdapter).submitList(pair.second)
+        }
     }
 
     fun addPart(style: Style = NoneStyle, block: PartCreator.() -> Unit) {
-        adapter.addAdapter(FormPartAdapter(this, style).apply {
-            submitList(block)
-        })
+        val part = FormPartAdapter(this, style)
+        adapter.addAdapter(part)
+        part.submitList(block)
+    }
+
+    fun update(isOnlyForm: Boolean = false) {
+        adapter.adapters.forEach {
+            if (it is FormPartAdapter) {
+                it.update()
+            } else {
+                if (!isOnlyForm) it.notifyItemRangeChanged(0, it.itemCount)
+            }
+        }
     }
 
     private fun dp2px(dp: Float) =
