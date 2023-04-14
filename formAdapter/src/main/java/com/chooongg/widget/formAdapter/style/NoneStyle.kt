@@ -12,7 +12,7 @@ import com.chooongg.widget.formAdapter.typeset.Typeset
 
 object NoneStyle : Style() {
 
-    override var isNeedDecorationMargins = true
+    override var isNeedDecorationMargins = false
 
     override var defaultTypeset: Typeset? = HorizontalTypeset
     override fun onCreateItemParent(parent: ViewGroup): ViewGroup? = null

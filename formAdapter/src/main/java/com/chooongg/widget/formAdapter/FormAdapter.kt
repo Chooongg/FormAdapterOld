@@ -3,7 +3,6 @@ package com.chooongg.widget.formAdapter
 import android.content.res.Resources
 import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
 import com.chooongg.widget.formAdapter.creator.FormCreator
 import com.chooongg.widget.formAdapter.creator.PartCreator
@@ -18,7 +17,7 @@ class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
     fun bind(recyclerView: RecyclerView) {
         _recyclerView = WeakReference(recyclerView)
         recyclerView.layoutManager = GridLayoutManager(recyclerView.context, 120).apply {
-            spanSizeLookup = object : SpanSizeLookup() {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     val pair = adapter.getWrappedAdapterAndPosition(position)
                     val adapter = pair.first

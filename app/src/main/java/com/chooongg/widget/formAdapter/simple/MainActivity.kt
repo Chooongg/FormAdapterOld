@@ -43,6 +43,9 @@ class MainActivity : AppCompatActivity() {
                 addPart(CardElevatedStyle) {
                     partName = "测试2"
                     createGroup {
+                        add(FormText("FormText", null).apply {
+                            content = "This is FormText4"
+                        })
                         addSingleLine {
                             add(FormText("FormText", null).apply {
                                 spanWeight = 2
@@ -51,13 +54,11 @@ class MainActivity : AppCompatActivity() {
                             add(FormText("FormText", null).apply {
                                 content = "This is FormText2"
                             })
+                            add(FormText("FormText", null).apply {
+                                content = "This is FormText3"
+                            })
                         }
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText3"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText4"
-                        })
+
                     }
                 }
                 addPart {
