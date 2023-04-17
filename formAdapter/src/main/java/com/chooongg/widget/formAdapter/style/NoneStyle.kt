@@ -2,7 +2,6 @@ package com.chooongg.widget.formAdapter.style
 
 import android.view.ViewGroup
 import android.widget.TextView
-import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
@@ -16,11 +15,7 @@ object NoneStyle : Style() {
 
     override var defaultTypeset: Typeset? = HorizontalTypeset
     override fun onCreateItemParent(parent: ViewGroup): ViewGroup? = null
-    override fun onBindItemParentLayout(
-        holder: FormViewHolder,
-        item: FormItem,
-        boundary: Boundary
-    ) = Unit
+    override fun onBindItemParentLayout(holder: FormViewHolder, item: FormItem) = Unit
 
     @Suppress("DEPRECATION")
     override fun onCreateGroupTitle(parent: ViewGroup) = TextView(parent.context).apply {
@@ -31,11 +26,7 @@ object NoneStyle : Style() {
         )
     }
 
-    override fun onBindGroupTitle(
-        holder: FormViewHolder,
-        item: FormGroupTitle,
-        boundary: Boundary
-    ) {
+    override fun onBindGroupTitle(holder: FormViewHolder, item: FormGroupTitle) {
         with(holder.getView<TextView>(R.id.formContent)) {
             text = item.name
         }

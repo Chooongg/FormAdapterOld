@@ -2,7 +2,6 @@ package com.chooongg.widget.formAdapter.item
 
 import android.view.View
 import android.view.ViewGroup
-import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 
@@ -14,9 +13,5 @@ class GroupForm : FormItem("", null) {
         return View(parent.context)
     }
 
-    override fun onBindItemView(
-        adapter: FormPartAdapter,
-        holder: FormViewHolder,
-        boundary: Boundary
-    ) = Unit
+    override fun onBindItemView(adapter: FormPartAdapter, holder: FormViewHolder) = Unit
 }

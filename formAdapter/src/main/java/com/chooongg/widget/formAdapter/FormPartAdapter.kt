@@ -2,7 +2,11 @@ package com.chooongg.widget.formAdapter
 
 import android.view.ViewGroup
 import androidx.collection.ArraySet
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.AsyncDifferConfig
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListUpdateCallback
+import androidx.recyclerview.widget.RecyclerView
 import com.chooongg.widget.formAdapter.creator.PartCreator
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
@@ -133,9 +137,11 @@ class FormPartAdapter internal constructor(
                     if (formItem.singleLineIndex == 0) {
                         formItem.boundary.start = Boundary.GLOBAL
                     } else {
-                        formItem.boundary.top =
-                            groupList[index - formItem.singleLineCount + formItem.singleLineIndex].boundary.top
-                        formItem.boundary.start = Boundary.NONE
+                        if (index != 0) {
+                            formItem.boundary.top =
+                                groupList[index - formItem.singleLineIndex].boundary.top
+                        }
+                        formItem.boundary.start = Boundary.LOCAL
                     }
                 } else {
                     formItem.boundary.start = Boundary.GLOBAL
@@ -150,8 +156,10 @@ class FormPartAdapter internal constructor(
                     if (groupList[i].singleLineIndex == groupList[i].singleLineCount - 1) {
                         groupList[i].boundary.end = Boundary.GLOBAL
                     } else {
-                        groupList[i].boundary.bottom =
-                            groupList[i + groupList[i].singleLineCount - groupList[i].singleLineIndex - 1].boundary.bottom
+                        if (i != groupList.lastIndex) {
+                            groupList[i].boundary.bottom =
+                                groupList[i + groupList[i].singleLineCount - groupList[i].singleLineIndex - 1].boundary.bottom
+                        }
                         groupList[i].boundary.end = Boundary.NONE
                     }
                 }
@@ -186,9 +194,8 @@ class FormPartAdapter internal constructor(
 
     override fun onBindViewHolder(holder: FormViewHolder, position: Int) {
         getItem(position).also {
-            val boundary = getItemBoundary(holder, it)
-            onBindParentViewHolder(holder, it, boundary)
-            it.onBindItemView(this, holder, boundary)
+            onBindParentViewHolder(holder, it)
+            it.onBindItemView(this, holder)
         }
     }
 
@@ -198,14 +205,13 @@ class FormPartAdapter internal constructor(
         payloads: MutableList<Any>
     ) {
         getItem(position).also {
-            val boundary = getItemBoundary(holder, it)
-            onBindParentViewHolder(holder, it, boundary)
-            it.onBindItemView(this, holder, boundary, payloads)
+            onBindParentViewHolder(holder, it)
+            it.onBindItemView(this, holder, payloads)
         }
     }
 
-    private fun onBindParentViewHolder(holder: FormViewHolder, item: FormItem, boundary: Boundary) {
-        style.onBindItemParentLayout(holder, item, boundary)
+    private fun onBindParentViewHolder(holder: FormViewHolder, item: FormItem) {
+        style.onBindItemParentLayout(holder, item)
         if (item.isNeedToTypeset) {
             (item.typeset ?: style.defaultTypeset)?.onBindItemTypesetParent(holder, item)
         }
@@ -240,26 +246,5 @@ class FormPartAdapter internal constructor(
         this._recyclerView = null
         adapterScope.cancel()
         adapterScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-    }
-
-    private fun getItemBoundary(holder: FormViewHolder, item: FormItem): Boundary {
-        return Boundary(
-            if (item.singleLineCount == 1 || item.singleLineIndex == 0) {
-                Boundary.GLOBAL
-            } else Boundary.NONE,
-            if (holder.absoluteAdapterPosition == 0) {
-                Boundary.GLOBAL
-            } else if (holder.bindingAdapterPosition == 0) {
-                Boundary.LOCAL
-            } else Boundary.NONE,
-            if (item.singleLineCount == 1 || item.singleLineIndex == item.singleLineCount - 1) {
-                Boundary.GLOBAL
-            } else Boundary.NONE,
-            if (holder.absoluteAdapterPosition == globalAdapter.adapter.itemCount - 1) {
-                Boundary.GLOBAL
-            } else if (holder.bindingAdapterPosition == itemCount - 1) {
-                Boundary.LOCAL
-            } else Boundary.NONE
-        )
     }
 }

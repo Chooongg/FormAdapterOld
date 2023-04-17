@@ -41,24 +41,36 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 addPart(CardElevatedStyle) {
-                    partName = "测试2"
                     createGroup {
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText4"
-                        })
                         addSingleLine {
-                            add(FormText("FormText", null).apply {
-                                spanWeight = 2
-                                content = "This is FormText"
-                            })
-                            add(FormText("FormText", null).apply {
-                                content = "This is FormText2"
-                            })
-                            add(FormText("FormText", null).apply {
-                                content = "This is FormText3"
-                            })
+                            for (i in 0..2){
+                                add(FormText("FormText", null).apply {
+                                    content = "This is FormText"
+                                })
+                            }
                         }
-
+                    }
+                }
+                addPart(CardElevatedStyle) {
+                    createGroup {
+                        addSingleLine {
+                            for (i in 0..3){
+                                add(FormText("FormText", null).apply {
+                                    content = "This issssss FormText"
+                                })
+                            }
+                        }
+                    }
+                }
+                addPart(CardElevatedStyle) {
+                    createGroup {
+                        addSingleLine {
+                            for (i in 0..4){
+                                add(FormText("FormText", null).apply {
+                                    content = "1 2 3 4 5 6 7 8 9 0"
+                                })
+                            }
+                        }
                     }
                 }
                 addPart {

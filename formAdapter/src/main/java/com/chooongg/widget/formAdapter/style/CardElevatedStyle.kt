@@ -3,7 +3,6 @@ package com.chooongg.widget.formAdapter.style
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
@@ -26,37 +25,33 @@ object CardElevatedStyle : Style() {
         }
     }
 
-    override fun onBindItemParentLayout(
-        holder: FormViewHolder,
-        item: FormItem,
-        boundary: Boundary
-    ) {
+    override fun onBindItemParentLayout(holder: FormViewHolder, item: FormItem) {
         with(holder.getView<MaterialCardView>(R.id.formInternalStyleLayout)) {
             val builder = shapeAppearanceModel.toBuilder()
             if (layoutDirection == View.LAYOUT_DIRECTION_LTR) {
-                if (boundary.top != 0 && boundary.start != 0) {
+                if (item.boundary.top != 0 && item.boundary.start != 0) {
                     builder.setTopLeftCornerSize(dp2px(8f).toFloat())
                 } else builder.setTopLeftCornerSize(0f)
-                if (boundary.top != 0 && boundary.end != 0) {
+                if (item.boundary.top != 0 && item.boundary.end != 0) {
                     builder.setTopRightCornerSize(dp2px(8f).toFloat())
                 } else builder.setTopRightCornerSize(0f)
-                if (boundary.bottom != 0 && boundary.start != 0) {
+                if (item.boundary.bottom != 0 && item.boundary.start != 0) {
                     builder.setBottomLeftCornerSize(dp2px(8f).toFloat())
                 } else builder.setBottomLeftCornerSize(0f)
-                if (boundary.bottom != 0 && boundary.end != 0) {
+                if (item.boundary.bottom != 0 && item.boundary.end != 0) {
                     builder.setBottomRightCornerSize(dp2px(8f).toFloat())
                 } else builder.setBottomRightCornerSize(0f)
             } else {
-                if (boundary.top != 0 && boundary.end != 0) {
+                if (item.boundary.top != 0 && item.boundary.end != 0) {
                     builder.setTopLeftCornerSize(dp2px(8f).toFloat())
                 } else builder.setTopLeftCornerSize(0f)
-                if (boundary.top != 0 && boundary.start != 0) {
+                if (item.boundary.top != 0 && item.boundary.start != 0) {
                     builder.setTopRightCornerSize(dp2px(8f).toFloat())
                 } else builder.setTopRightCornerSize(0f)
-                if (boundary.bottom != 0 && boundary.end != 0) {
+                if (item.boundary.bottom != 0 && item.boundary.end != 0) {
                     builder.setBottomLeftCornerSize(dp2px(8f).toFloat())
                 } else builder.setBottomLeftCornerSize(0f)
-                if (boundary.bottom != 0 && boundary.start != 0) {
+                if (item.boundary.bottom != 0 && item.boundary.start != 0) {
                     builder.setBottomRightCornerSize(dp2px(8f).toFloat())
                 } else builder.setBottomRightCornerSize(0f)
             }
@@ -72,11 +67,7 @@ object CardElevatedStyle : Style() {
         )
     }
 
-    override fun onBindGroupTitle(
-        holder: FormViewHolder,
-        item: FormGroupTitle,
-        boundary: Boundary
-    ) {
+    override fun onBindGroupTitle(holder: FormViewHolder, item: FormGroupTitle) {
         with(holder.getView<TextView>(R.id.formContent)) {
             text = item.name
         }

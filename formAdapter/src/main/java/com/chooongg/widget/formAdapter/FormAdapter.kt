@@ -37,11 +37,11 @@ class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
         }
         recyclerView.adapter = adapter
         for (i in recyclerView.itemDecorationCount - 1 downTo 0) {
-            if (recyclerView.getItemDecorationAt(i) is FormItemDecoration) {
+            if (recyclerView.getItemDecorationAt(i) is FormGridItemDecoration) {
                 recyclerView.removeItemDecorationAt(i)
             }
         }
-        recyclerView.addItemDecoration(FormItemDecoration(recyclerView.context, this))
+        recyclerView.addItemDecoration(FormGridItemDecoration(recyclerView.context, this))
     }
 
     fun setNewInstance(block: FormCreator.() -> Unit) {

@@ -234,16 +234,11 @@ abstract class FormItem(
 
     abstract fun onCreateItemView(adapter: FormPartAdapter, parent: ViewGroup): View
 
-    abstract fun onBindItemView(
-        adapter: FormPartAdapter,
-        holder: FormViewHolder,
-        boundary: Boundary
-    )
+    abstract fun onBindItemView(adapter: FormPartAdapter, holder: FormViewHolder)
 
     open fun onBindItemView(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
-        boundary: Boundary,
         payloads: MutableList<Any>?
-    ) = onBindItemView(adapter, holder, boundary)
+    ) = onBindItemView(adapter, holder)
 }
