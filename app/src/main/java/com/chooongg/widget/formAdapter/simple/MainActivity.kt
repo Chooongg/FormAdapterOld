@@ -15,6 +15,7 @@ import com.chooongg.widget.formAdapter.FormAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.item.FormText
 import com.chooongg.widget.formAdapter.style.CardElevatedStyle
+import kotlin.reflect.KTypeParameter
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity() {
                 addPart(CardElevatedStyle) {
                     createGroup {
                         addSingleLine {
-                            for (i in 0..2){
+                            for (i in 0..1) {
                                 add(FormText("FormText", null).apply {
                                     content = "This is FormText"
                                 })
@@ -54,7 +55,18 @@ class MainActivity : AppCompatActivity() {
                 addPart(CardElevatedStyle) {
                     createGroup {
                         addSingleLine {
-                            for (i in 0..3){
+                            for (i in 0..2) {
+                                add(FormText("FormText", null).apply {
+                                    content = "This is FormText"
+                                })
+                            }
+                        }
+                    }
+                }
+                addPart(CardElevatedStyle) {
+                    createGroup {
+                        addSingleLine {
+                            for (i in 0..3) {
                                 add(FormText("FormText", null).apply {
                                     content = "This issssss FormText"
                                 })
@@ -65,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                 addPart(CardElevatedStyle) {
                     createGroup {
                         addSingleLine {
-                            for (i in 0..4){
+                            for (i in 0..4) {
                                 add(FormText("FormText", null).apply {
                                     content = "1 2 3 4 5 6 7 8 9 0"
                                 })
@@ -187,40 +199,5 @@ class MainActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private class Adapter : RecyclerView.Adapter<FormViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FormViewHolder {
-            return FormViewHolder(LinearLayoutCompat(parent.context).apply {
-                setBackgroundColor(Color.RED)
-                addView(View(parent.context))
-            })
-        }
-
-        override fun getItemCount() = 4
-
-        override fun onBindViewHolder(holder: FormViewHolder, position: Int) {
-            with(holder.itemView) {
-
-            }
-            with((holder.itemView as ViewGroup).getChildAt(0)) {
-                setBackgroundColor(Color.YELLOW)
-                layoutParams = LinearLayoutCompat.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    300 + 100 * position
-                ).apply {
-                    if (position == 0) {
-                        marginStart = 30
-                        marginEnd = 0
-                    } else if (position == 2) {
-                        marginStart = 0
-                        marginEnd = 30
-                    } else {
-                        marginStart = 0
-                        marginEnd = 0
-                    }
-                }
-            }
-        }
     }
 }

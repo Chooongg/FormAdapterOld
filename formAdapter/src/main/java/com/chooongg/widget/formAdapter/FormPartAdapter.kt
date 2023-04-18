@@ -141,7 +141,7 @@ class FormPartAdapter internal constructor(
                             formItem.boundary.top =
                                 groupList[index - formItem.singleLineIndex].boundary.top
                         }
-                        formItem.boundary.start = Boundary.LOCAL
+                        formItem.boundary.start = Boundary.NONE
                     }
                 } else {
                     formItem.boundary.start = Boundary.GLOBAL
