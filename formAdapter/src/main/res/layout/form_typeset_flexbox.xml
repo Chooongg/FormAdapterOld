@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/formInternalTypesetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/formItemMinHeight"
+    app:alignItems="center"
+    app:dividerDrawableHorizontal="@drawable/form_flex_horizontal_divider"
+    app:dividerDrawableVertical="@drawable/form_flex_vertical_divider"
+    app:flexWrap="wrap"
+    app:showDivider="middle"
+    tools:parentTag="com.google.android.flexbox.FlexboxLayout">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/formInternalNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/formVerticalLocalPaddingSize"
+        android:paddingBottom="@dimen/formVerticalLocalPaddingSize"
+        tools:text="Name" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/formInternalMenuButton"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:insetLeft="4dp"
+        android:insetTop="4dp"
+        android:insetRight="4dp"
+        android:insetBottom="4dp"
+        android:minWidth="@dimen/formItemMinHeight"
+        android:minHeight="@dimen/formItemMinHeight"
+        android:paddingHorizontal="@dimen/formHorizontalLocalPaddingSize"
+        android:paddingVertical="@dimen/formVerticalLocalPaddingSize"
+        app:icon="@android:drawable/ic_menu_close_clear_cancel"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:strokeColor="@android:color/transparent"
+        app:strokeWidth="0dp"
+        tools:text="Menu" />
+
+</com.google.android.flexbox.FlexboxLayout>

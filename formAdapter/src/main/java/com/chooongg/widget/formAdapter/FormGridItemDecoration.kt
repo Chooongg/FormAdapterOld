@@ -2,7 +2,6 @@ package com.chooongg.widget.formAdapter
 
 import android.content.Context
 import android.graphics.Rect
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
@@ -11,13 +10,13 @@ class FormGridItemDecoration(context: Context, private val formAdapter: BaseForm
     ItemDecoration() {
 
     private val verticalMarginGlobal =
-        context.resources.getDimensionPixelOffset(R.dimen.formVerticalMarginGlobal)
+        context.resources.getDimensionPixelOffset(R.dimen.formVerticalGlobalMarginSize)
     private val verticalMarginLocal =
-        context.resources.getDimensionPixelOffset(R.dimen.formVerticalMarginLocal)
+        context.resources.getDimensionPixelOffset(R.dimen.formVerticalLocalMarginSize)
     private val horizontalMarginGlobal =
-        context.resources.getDimensionPixelOffset(R.dimen.formHorizontalMarginGlobal)
+        context.resources.getDimensionPixelOffset(R.dimen.formHorizontalGlobalMarginSize)
     private val horizontalMarginLocal =
-        context.resources.getDimensionPixelOffset(R.dimen.formHorizontalMarginLocal)
+        context.resources.getDimensionPixelOffset(R.dimen.formHorizontalLocalMarginSize)
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -30,7 +29,6 @@ class FormGridItemDecoration(context: Context, private val formAdapter: BaseForm
             formAdapter.adapter.getWrappedAdapterAndPosition(holder.absoluteAdapterPosition).first
         if (adapter !is FormPartAdapter || !adapter.style.isNeedDecorationMargins) return
         val item = adapter.getItem(holder.bindingAdapterPosition)
-        Log.e("ItemDecoration", "${holder.absoluteAdapterPosition}\n${item.boundary}")
         outRect.top = if (holder.absoluteAdapterPosition == 0) {
             verticalMarginGlobal
         } else if (holder.bindingAdapterPosition == 0 || item.itemPosition == 0) {

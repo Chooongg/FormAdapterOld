@@ -1,21 +1,17 @@
 package com.chooongg.widget.formAdapter.simple
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.RecyclerView
 import com.chooongg.widget.formAdapter.FormAdapter
-import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.item.FormText
 import com.chooongg.widget.formAdapter.style.CardElevatedStyle
-import kotlin.reflect.KTypeParameter
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,20 +20,10 @@ class MainActivity : AppCompatActivity() {
 
         init {
             adapter.setNewInstance {
-                addPart {
-                    partName = "测试"
+                addPart(CardElevatedStyle) {
                     createGroup {
                         add(FormText("FormText", null).apply {
                             content = "This is FormText"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText2"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText3"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText4"
                         })
                     }
                 }
@@ -85,91 +71,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                addPart {
-                    partName = "测试3"
-                    createGroup {
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText2"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText3"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText4"
-                        })
-                    }
-                }
-                addPart {
-                    partName = "测试4"
-                    createGroup {
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText2"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText3"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText4"
-                        })
-                    }
-                }
-                addPart {
-                    partName = "测试4"
-                    createGroup {
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText2"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText3"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText4"
-                        })
-                    }
-                }
-                addPart {
-                    partName = "测试4"
-                    createGroup {
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText2"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText3"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText4"
-                        })
-                    }
-                }
-                addPart {
-                    partName = "测试4"
-                    createGroup {
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText2"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText3"
-                        })
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText4"
-                        })
-                    }
-                }
             }
         }
     }
@@ -178,9 +79,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window,false)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { v, insets ->
+            val inset = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(inset.left, 0, inset.right, inset.bottom)
+            insets
+        }
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
-
         model.adapter.bind(findViewById(R.id.recyclerView))
     }
 

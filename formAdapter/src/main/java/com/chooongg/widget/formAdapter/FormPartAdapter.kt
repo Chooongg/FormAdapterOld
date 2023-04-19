@@ -186,9 +186,11 @@ class FormPartAdapter internal constructor(
         } else null
         if (styleLayout != null && typesetLayout != null) styleLayout.addView(typesetLayout)
         val view = item.onCreateItemView(this, typesetLayout ?: styleLayout ?: parent)
-        if ((typesetLayout ?: styleLayout) != null) (typesetLayout ?: styleLayout)!!.addView(
-            view
-        )
+        if (typesetLayout != null) {
+            typesetLayout.addView(
+                view, (item.typeset ?: style.defaultTypeset)?.generateDefaultLayoutParams()
+            )
+        } else styleLayout?.addView(view)
         return FormViewHolder(styleLayout ?: typesetLayout ?: view)
     }
 

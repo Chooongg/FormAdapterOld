@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
+import androidx.annotation.Px
 import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
@@ -81,19 +82,12 @@ abstract class FormItem(
      */
     @DrawableRes
     open var menuIconRes: Int? = null
-        set(value) {
-            field = value
-            menuIcon = null
-        }
 
     /**
-     * 菜单图标
+     * 菜单图标大小
      */
-    open var menuIcon: Drawable? = null
-        set(value) {
-            field = value
-            menuIconRes = null
-        }
+    @Px
+    open var menuIconSize: Int = 0
 
     /**
      * 是否在组边缘展示

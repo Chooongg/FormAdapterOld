@@ -27,8 +27,8 @@ object HorizontalTypeset : Typeset {
     }
 
     override fun onBindItemTypesetParent(holder: FormViewHolder, item: FormItem) {
-//        with(holder.getView<MaterialTextView>(R.id.formInternalNameTextView)) {
-//            text = item.name
-//        }
+        with(holder.getView<MaterialTextView>(R.id.formInternalNameTextView)) {
+            text = item.name
+        }
     }
 }

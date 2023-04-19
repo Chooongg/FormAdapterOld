@@ -22,4 +22,6 @@ interface Typeset {
      * 绑定项目的排版布局
      */
     fun onBindItemTypesetParent(holder: FormViewHolder, item: FormItem)
+
+    fun generateDefaultLayoutParams(): ViewGroup.LayoutParams? = null
 }

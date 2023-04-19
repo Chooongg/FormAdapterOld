@@ -12,7 +12,6 @@ class FormText(name: CharSequence, field: String?) : FormItem(name, field) {
     override fun onCreateItemView(adapter: FormPartAdapter, parent: ViewGroup): View {
         return MaterialTextView(parent.context).apply {
             id = R.id.formContent
-            val paddingV = resources.getDimensionPixelOffset(R.dimen.formVerticalPaddingGlobal)
         }
     }
 

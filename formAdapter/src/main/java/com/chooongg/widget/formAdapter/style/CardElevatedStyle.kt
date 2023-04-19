@@ -7,13 +7,13 @@ import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
-import com.chooongg.widget.formAdapter.typeset.HorizontalTypeset
+import com.chooongg.widget.formAdapter.typeset.FlexBoxTypeset
 import com.chooongg.widget.formAdapter.typeset.Typeset
 import com.google.android.material.card.MaterialCardView
 
 object CardElevatedStyle : Style() {
 
-    override var defaultTypeset: Typeset? = HorizontalTypeset
+    override var defaultTypeset: Typeset? = FlexBoxTypeset
 
     override fun onCreateItemParent(parent: ViewGroup): ViewGroup {
         return MaterialCardView(

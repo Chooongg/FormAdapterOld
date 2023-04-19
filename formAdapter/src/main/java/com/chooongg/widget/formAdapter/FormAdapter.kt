@@ -1,7 +1,6 @@
 package com.chooongg.widget.formAdapter
 
 import android.content.res.Resources
-import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chooongg.widget.formAdapter.creator.FormCreator
@@ -23,13 +22,8 @@ class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
                     val adapter = pair.first
                     return if (adapter is FormPartAdapter) {
                         val item = adapter.getItem(pair.second)
-                        Log.e(
-                            "GridLayoutManager",
-                            "position = $position, spanSize = ${item.spanSize}"
-                        )
                         item.spanSize
                     } else {
-                        Log.e("GridLayoutManager", "position = $position, spanSize = ${120}")
                         120
                     }
                 }
