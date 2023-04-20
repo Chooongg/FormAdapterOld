@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/formInternalTypesetLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/formItemMinHeight">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/formInternalNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/formVerticalLocalPaddingSize"
+        android:paddingBottom="@dimen/formVerticalLocalPaddingSize"
+        app:layout_flexGrow="1.0"
+        tools:text="Name" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/formInternalMenuButton"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:insetLeft="4dp"
+        android:insetTop="0dp"
+        android:insetRight="4dp"
+        android:insetBottom="0dp"
+        android:minWidth="@dimen/formItemMinHeight"
+        android:minHeight="0dp"
+        android:paddingHorizontal="@dimen/formHorizontalLocalPaddingSize"
+        android:paddingVertical="0dp"
+        app:icon="@android:drawable/ic_menu_close_clear_cancel"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:layout_alignSelf="stretch"
+        app:strokeColor="@android:color/transparent"
+        app:strokeWidth="0dp"
+        tools:text="Menu" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

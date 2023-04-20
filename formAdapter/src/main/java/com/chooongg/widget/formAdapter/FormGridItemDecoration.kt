@@ -67,16 +67,16 @@ class FormGridItemDecoration(context: Context, private val formAdapter: BaseForm
                         when (item.singleLineIndex) {
                             0 -> {
                                 outRect.left = horizontalMarginGlobal
-                                outRect.right = -horizontalMarginGlobal / 3
+                                outRect.right = -horizontalMarginGlobal / 2
                             }
 
                             1 -> {
-                                outRect.left = horizontalMarginGlobal / 3
-                                outRect.right = horizontalMarginGlobal / 3
+                                outRect.left = horizontalMarginGlobal / 2
+                                outRect.right = horizontalMarginGlobal / 2
                             }
 
                             2 -> {
-                                outRect.left = -horizontalMarginGlobal / 3
+                                outRect.left = -horizontalMarginGlobal / 2
                                 outRect.right = horizontalMarginGlobal
                             }
                         }
@@ -86,21 +86,21 @@ class FormGridItemDecoration(context: Context, private val formAdapter: BaseForm
                         when (item.singleLineIndex) {
                             0 -> {
                                 outRect.left = horizontalMarginGlobal
-                                outRect.right = -horizontalMarginGlobal / 2
+                                outRect.right = -(horizontalMarginGlobal / 4f * 3).toInt()
                             }
 
                             1 -> {
-                                outRect.left = horizontalMarginGlobal / 2
+                                outRect.left = (horizontalMarginGlobal / 4f * 3).toInt()
                                 outRect.right = 0
                             }
 
                             2 -> {
                                 outRect.left = 0
-                                outRect.right = horizontalMarginGlobal / 2
+                                outRect.right = (horizontalMarginGlobal / 4f * 3).toInt()
                             }
 
                             3 -> {
-                                outRect.left = -horizontalMarginGlobal / 2
+                                outRect.left = -(horizontalMarginGlobal / 4f * 3).toInt()
                                 outRect.right = horizontalMarginGlobal
                             }
                         }
@@ -110,26 +110,26 @@ class FormGridItemDecoration(context: Context, private val formAdapter: BaseForm
                         when (item.singleLineIndex) {
                             0 -> {
                                 outRect.left = horizontalMarginGlobal
-                                outRect.right = -(horizontalMarginGlobal / 5f * 3).toInt()
+                                outRect.right = -horizontalMarginGlobal
                             }
 
                             1 -> {
-                                outRect.left = (horizontalMarginGlobal / 5f * 3).toInt()
-                                outRect.right = -horizontalMarginGlobal / 5
+                                outRect.left = horizontalMarginGlobal
+                                outRect.right = -(horizontalMarginGlobal / 8f * 2).toInt()
                             }
 
                             2 -> {
-                                outRect.left = horizontalMarginGlobal / 5
-                                outRect.right = horizontalMarginGlobal / 5
+                                outRect.left = (horizontalMarginGlobal / 8f * 2).toInt()
+                                outRect.right = (horizontalMarginGlobal / 8f * 2).toInt()
                             }
 
                             3 -> {
-                                outRect.left = -horizontalMarginGlobal / 5
-                                outRect.right = (horizontalMarginGlobal / 5f * 3).toInt()
+                                outRect.left = -(horizontalMarginGlobal / 8f * 2).toInt()
+                                outRect.right = horizontalMarginGlobal
                             }
 
                             4 -> {
-                                outRect.left = -(horizontalMarginGlobal / 5f * 3).toInt()
+                                outRect.left = -horizontalMarginGlobal
                                 outRect.right = horizontalMarginGlobal
                             }
                         }
@@ -167,18 +167,18 @@ class FormGridItemDecoration(context: Context, private val formAdapter: BaseForm
                     3 -> {
                         when (item.singleLineIndex) {
                             0 -> {
-                                outRect.left = -horizontalMarginGlobal / 3
+                                outRect.left = -horizontalMarginGlobal / 2
                                 outRect.right = horizontalMarginGlobal
                             }
 
                             1 -> {
-                                outRect.left = horizontalMarginGlobal / 3
-                                outRect.right = horizontalMarginGlobal / 3
+                                outRect.left = horizontalMarginGlobal / 2
+                                outRect.right = horizontalMarginGlobal / 2
                             }
 
                             2 -> {
                                 outRect.left = horizontalMarginGlobal
-                                outRect.right = -horizontalMarginGlobal / 3
+                                outRect.right = -horizontalMarginGlobal / 2
                             }
                         }
                     }
@@ -186,23 +186,23 @@ class FormGridItemDecoration(context: Context, private val formAdapter: BaseForm
                     4 -> {
                         when (item.singleLineIndex) {
                             0 -> {
-                                outRect.left = -horizontalMarginGlobal / 2
+                                outRect.left = -(horizontalMarginGlobal / 4f * 3).toInt()
                                 outRect.right = horizontalMarginGlobal
                             }
 
                             1 -> {
                                 outRect.left = 0
-                                outRect.right = horizontalMarginGlobal / 2
+                                outRect.right = (horizontalMarginGlobal / 4f * 3).toInt()
                             }
 
                             2 -> {
-                                outRect.left = horizontalMarginGlobal / 2
+                                outRect.left = (horizontalMarginGlobal / 4f * 3).toInt()
                                 outRect.right = 0
                             }
 
                             3 -> {
                                 outRect.left = horizontalMarginGlobal
-                                outRect.right = -horizontalMarginGlobal / 2
+                                outRect.right = -(horizontalMarginGlobal / 4f * 3).toInt()
                             }
                         }
                     }

@@ -7,22 +7,20 @@ import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
-import com.chooongg.widget.formAdapter.typeset.FlexBoxTypeset
+import com.chooongg.widget.formAdapter.typeset.HorizontalTypeset
 import com.chooongg.widget.formAdapter.typeset.Typeset
 import com.google.android.material.card.MaterialCardView
 
 object CardElevatedStyle : Style() {
 
-    override var defaultTypeset: Typeset? = FlexBoxTypeset
+    override var defaultTypeset: Typeset? = HorizontalTypeset
 
     override fun onCreateItemParent(parent: ViewGroup): ViewGroup {
         return MaterialCardView(
             parent.context,
             null,
             com.google.android.material.R.attr.materialCardViewElevatedStyle
-        ).apply {
-            id = R.id.formInternalStyleLayout
-        }
+        ).apply { id = R.id.formInternalStyleLayout }
     }
 
     override fun onBindItemParentLayout(holder: FormViewHolder, item: FormItem) {
@@ -59,11 +57,11 @@ object CardElevatedStyle : Style() {
         }
     }
 
+    @Suppress("DEPRECATION")
     override fun onCreateGroupTitle(parent: ViewGroup) = TextView(parent.context).apply {
         id = R.id.formContent
         setTextAppearance(
-            context,
-            com.google.android.material.R.style.TextAppearance_Material3_HeadlineMedium
+            context, com.google.android.material.R.style.TextAppearance_Material3_HeadlineMedium
         )
     }
 
