@@ -6,14 +6,14 @@ import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
+import com.chooongg.widget.formAdapter.typeset.FlexBoxTypeset
 import com.chooongg.widget.formAdapter.typeset.HorizontalTypeset
 import com.chooongg.widget.formAdapter.typeset.Typeset
 
-object NoneStyle : Style() {
+object NoneStyle : Style(FlexBoxTypeset) {
 
     override var isNeedDecorationMargins = false
 
-    override var defaultTypeset: Typeset? = HorizontalTypeset
     override fun onCreateItemParent(parent: ViewGroup): ViewGroup? = null
     override fun onBindItemParentLayout(holder: FormViewHolder, item: FormItem) = Unit
 

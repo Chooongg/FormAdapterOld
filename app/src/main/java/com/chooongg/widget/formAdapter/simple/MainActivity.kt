@@ -20,16 +20,17 @@ class MainActivity : AppCompatActivity() {
 
         init {
             adapter.setNewInstance {
-                addPart(CardElevatedStyle) {
+                addPart(CardElevatedStyle()) {
                     createGroup {
                         add(FormText("FormText", null).apply {
                             content = "This is FormText"
+                            menuIconRes = com.google.android.material.R.drawable.ic_clock_black_24dp
                         })
                     }
                 }
-                addPart(CardElevatedStyle) {
+                addPart(CardElevatedStyle()) {
                     createGroup {
-                        addSingleLine {
+                        addMultiColumn {
                             for (i in 0..1) {
                                 add(FormText("FormText", null).apply {
                                     content = "This is FormText"
@@ -38,9 +39,9 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                addPart(CardElevatedStyle) {
+                addPart(CardElevatedStyle()) {
                     createGroup {
-                        addSingleLine {
+                        addMultiColumn {
                             for (i in 0..2) {
                                 add(FormText("FormText", null).apply {
                                     content = "This is FormText"
@@ -49,9 +50,9 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                addPart(CardElevatedStyle) {
+                addPart(CardElevatedStyle()) {
                     createGroup {
-                        addSingleLine {
+                        addMultiColumn {
                             for (i in 0..3) {
                                 add(FormText("FormText", null).apply {
                                     content = "This issssss FormText"
@@ -60,9 +61,9 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                addPart(CardElevatedStyle) {
+                addPart(CardElevatedStyle()) {
                     createGroup {
-                        addSingleLine {
+                        addMultiColumn {
                             for (i in 0..4) {
                                 add(FormText("FormText", null).apply {
                                     content = "1 2 3 4 5 6 7 8 9 0"
@@ -79,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window,false)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { v, insets ->
             val inset = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(inset.left, 0, inset.right, inset.bottom)

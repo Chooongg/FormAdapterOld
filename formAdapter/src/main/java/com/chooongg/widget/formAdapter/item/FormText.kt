@@ -12,23 +12,16 @@ import com.google.android.material.textview.MaterialTextView
 
 class FormText(name: CharSequence, field: String?) : FormItem(name, field) {
 
-    override fun onCreateItemView(adapter: FormPartAdapter, parent: ViewGroup): View {
+    override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.form_item_text, parent, false)
         return view
     }
 
-    override fun onBindItemView(adapter: FormPartAdapter, holder: FormViewHolder) {
+    override fun onBindContentView(adapter: FormPartAdapter, holder: FormViewHolder) {
         holder.getView<MaterialTextView>(R.id.formContent).also {
             it.text = content?.toString()
             it.hint = hint ?: "空"
-            it.setBackgroundColor(Color.GREEN)
-            it.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                topMargin = -holder.paddingVerticalLocal
-                bottomMargin = -holder.paddingVerticalLocal
-                leftMargin = -holder.paddingHorizontalLocal
-                rightMargin = -holder.paddingHorizontalLocal
-            }
         }
     }
 }

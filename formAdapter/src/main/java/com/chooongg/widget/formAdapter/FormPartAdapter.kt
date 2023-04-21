@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chooongg.widget.formAdapter.creator.PartCreator
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
-import com.chooongg.widget.formAdapter.item.GroupForm
+import com.chooongg.widget.formAdapter.item.MultiColumnForm
 import com.chooongg.widget.formAdapter.style.Style
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +37,9 @@ class FormPartAdapter internal constructor(
     private val itemFactoryCache = ItemFactoryCache()
 
     internal val itemTypeLookup = ArraySet<ItemViewType>()
+
+    var listener: FormEventListener? = null
+        internal set
 
     internal lateinit var creator: PartCreator
 
@@ -95,29 +98,30 @@ class FormPartAdapter internal constructor(
             group@ for (item in group) {
                 item.groupIndex = -1
                 if (!item.isRealVisible(globalAdapter.isEditable)) continue@group
-                if (item is GroupForm) {
-                    val singleGroup = ArrayList<FormItem>()
-                    singleLine@ for (it in item.items) {
-                        if (!it.isRealVisible(globalAdapter.isEditable)) continue@singleLine
-                        singleGroup.add(it)
+                if (item is MultiColumnForm) {
+                    val multiColumn = ArrayList<FormItem>()
+                    item@ for (it in item.items) {
+                        if (!it.isRealVisible(globalAdapter.isEditable)) continue@item
+                        multiColumn.add(it)
                     }
-                    if (singleGroup.isEmpty()) continue@group
+                    // TODO 单行计算改为多列计算
+                    if (multiColumn.isEmpty()) continue@group
                     var maxWidget = 0
-                    singleGroup.forEachIndexed { index, formItem ->
+                    multiColumn.forEachIndexed { index, formItem ->
                         maxWidget += formItem.spanWeight
-                        formItem.singleLineCount = singleGroup.size
+                        formItem.singleLineCount = multiColumn.size
                         formItem.singleLineIndex = index
                         groupList.add(formItem)
                     }
-                    if (singleGroup.size == 1) {
-                        singleGroup[0].spanSize = 120
+                    if (multiColumn.size == 1) {
+                        multiColumn[0].spanSize = 120
                     } else {
-                        singleGroup.forEach {
+                        multiColumn.forEach {
                             it.spanSize = (120 / maxWidget) * it.spanWeight
                         }
                         if (120 % maxWidget != 0) {
                             for (i in 0 until 120 % maxWidget) {
-                                singleGroup[i % singleGroup.size].spanSize += 1
+                                multiColumn[i % multiColumn.size].spanSize += 1
                             }
                         }
                     }
@@ -185,11 +189,13 @@ class FormPartAdapter internal constructor(
                 ?.onCreateItemTypesetParent(styleLayout ?: parent)
         } else null
         if (styleLayout != null && typesetLayout != null) styleLayout.addView(typesetLayout)
-        val view = item.onCreateItemView(this, typesetLayout ?: styleLayout ?: parent)
+        val view = item.onCreateContentView(this, typesetLayout ?: styleLayout ?: parent)
         if (typesetLayout != null) {
-            typesetLayout.addView(
-                view, (item.typeset ?: style.defaultTypeset)?.generateDefaultLayoutParams()
-            )
+            (item.typeset ?: style.defaultTypeset)?.also {
+                val pair = it.onCreateMenuButton(typesetLayout)
+                typesetLayout.addView(pair.first, pair.second)
+                it.addContentView(typesetLayout, view)
+            }
         } else styleLayout?.addView(view)
         return FormViewHolder(styleLayout ?: typesetLayout ?: view)
     }
@@ -197,7 +203,7 @@ class FormPartAdapter internal constructor(
     override fun onBindViewHolder(holder: FormViewHolder, position: Int) {
         getItem(position).also {
             onBindParentViewHolder(holder, it)
-            it.onBindItemView(this, holder)
+            it.onBindContentView(this, holder)
         }
     }
 
@@ -208,14 +214,18 @@ class FormPartAdapter internal constructor(
     ) {
         getItem(position).also {
             onBindParentViewHolder(holder, it)
-            it.onBindItemView(this, holder, payloads)
+            it.onBindContentView(this, holder, payloads)
         }
     }
 
     private fun onBindParentViewHolder(holder: FormViewHolder, item: FormItem) {
+        holder.itemView.setOnClickListener { listener?.onFormClick(this, item, holder.itemView) }
         style.onBindItemParentLayout(holder, item)
         if (item.isNeedToTypeset) {
-            (item.typeset ?: style.defaultTypeset)?.onBindItemTypesetParent(holder, item)
+            (item.typeset ?: style.defaultTypeset)?.also {
+                it.onBindItemTypesetParent(this, holder, item)
+                it.onBindMenuButton(this, holder, item)
+            }
         }
     }
 

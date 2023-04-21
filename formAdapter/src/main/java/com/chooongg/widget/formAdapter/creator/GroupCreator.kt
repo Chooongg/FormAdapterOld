@@ -1,7 +1,7 @@
 package com.chooongg.widget.formAdapter.creator
 
 import com.chooongg.widget.formAdapter.item.FormItem
-import com.chooongg.widget.formAdapter.item.GroupForm
+import com.chooongg.widget.formAdapter.item.MultiColumnForm
 
 open class GroupCreator {
 
@@ -11,14 +11,13 @@ open class GroupCreator {
         items.add(item)
     }
 
-    fun addSingleLine(block: GroupFormCreator.() -> Unit) {
-        val creator = GroupFormCreator().apply(block)
-        creator.items.forEachIndexed { index, formItem ->
-            if (index >= 5) throw IndexOutOfBoundsException("SingleLine can not have more than 5 items")
-            if (formItem is GroupForm) throw IllegalArgumentException("GroupForm can not be added to SingleLine")
-            formItem.isShowOnEdge = creator.isShowOnEdge
+    fun addMultiColumn(block: MultiColumnCreator.() -> Unit) {
+        val creator = MultiColumnCreator().apply(block)
+        creator.items.forEach {
+            if (it is MultiColumnForm) throw IllegalArgumentException("GroupForm can not be added to SingleLine")
+            it.isShowOnEdge = creator.isShowOnEdge
         }
-        items.add(GroupForm().apply {
+        items.add(MultiColumnForm().apply {
             items = ArrayList(creator.items)
         })
     }

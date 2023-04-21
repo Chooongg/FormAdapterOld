@@ -9,15 +9,15 @@ class FormGroupTitle(name: CharSequence, field: String?) : FormItem(name, field)
 
     override var isNeedToTypeset: Boolean = false
 
-    override fun onCreateItemView(adapter: FormPartAdapter, parent: ViewGroup): View {
+    override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View {
         return adapter.style.onCreateGroupTitle(parent)
     }
 
-    override fun onBindItemView(adapter: FormPartAdapter, holder: FormViewHolder) {
+    override fun onBindContentView(adapter: FormPartAdapter, holder: FormViewHolder) {
         adapter.style.onBindGroupTitle(holder, this)
     }
 
-    override fun onBindItemView(
+    override fun onBindContentView(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
         payloads: MutableList<Any>?

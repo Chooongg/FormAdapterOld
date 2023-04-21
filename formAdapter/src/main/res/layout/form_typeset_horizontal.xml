@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipChildren="false"
-    android:gravity="center_vertical"
-    android:minHeight="@dimen/formItemMinHeight">
+    android:gravity="center_vertical">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/formInternalNameTextView"
@@ -27,7 +26,6 @@
         android:insetTop="0dp"
         android:insetRight="4dp"
         android:insetBottom="0dp"
-        android:minWidth="@dimen/formItemMinHeight"
         android:minHeight="0dp"
         android:paddingHorizontal="@dimen/formHorizontalLocalPaddingSize"
         android:paddingVertical="0dp"

@@ -2,8 +2,6 @@
 <com.google.android.material.textview.MaterialTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/formContent"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/formVerticalLocalPaddingSize"
-    android:paddingBottom="@dimen/formVerticalLocalPaddingSize">
+    android:layout_height="wrap_content">
 
 </com.google.android.material.textview.MaterialTextView>

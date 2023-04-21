@@ -1,6 +1,5 @@
 package com.chooongg.widget.formAdapter.item
 
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
@@ -226,13 +225,27 @@ abstract class FormItem(
         json.putOpt(field, content)
     }
 
-    abstract fun onCreateItemView(adapter: FormPartAdapter, parent: ViewGroup): View
+    /**
+     * 创建内容视图
+     */
+    abstract fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View
 
-    abstract fun onBindItemView(adapter: FormPartAdapter, holder: FormViewHolder)
+    /**
+     * 绑定内容视图
+     */
+    abstract fun onBindContentView(adapter: FormPartAdapter, holder: FormViewHolder)
 
-    open fun onBindItemView(
+    /**
+     * 绑定内容视图
+     */
+    open fun onBindContentView(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
         payloads: MutableList<Any>?
-    ) = onBindItemView(adapter, holder)
+    ) = onBindContentView(adapter, holder)
+
+    /**
+     * 排版是否忽略排版按钮
+     */
+    open fun typesetIgnoreMenuButtons() = false
 }

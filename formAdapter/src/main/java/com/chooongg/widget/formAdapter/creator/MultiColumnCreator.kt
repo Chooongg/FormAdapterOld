@@ -1,7 +1,6 @@
 package com.chooongg.widget.formAdapter.creator
 
-class GroupFormCreator:GroupCreator() {
+class MultiColumnCreator:GroupCreator() {
 
     var isShowOnEdge = true
-
 }

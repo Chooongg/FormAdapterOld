@@ -1,5 +1,7 @@
 package com.chooongg.widget.formAdapter.style
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -7,20 +9,21 @@ import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
-import com.chooongg.widget.formAdapter.typeset.HorizontalTypeset
+import com.chooongg.widget.formAdapter.typeset.FlexBoxTypeset
 import com.chooongg.widget.formAdapter.typeset.Typeset
 import com.google.android.material.card.MaterialCardView
 
-object CardElevatedStyle : Style() {
-
-    override var defaultTypeset: Typeset? = HorizontalTypeset
+class CardElevatedStyle(defaultTypeset: Typeset? = FlexBoxTypeset) : Style(defaultTypeset) {
 
     override fun onCreateItemParent(parent: ViewGroup): ViewGroup {
         return MaterialCardView(
             parent.context,
             null,
             com.google.android.material.R.attr.materialCardViewElevatedStyle
-        ).apply { id = R.id.formInternalStyleLayout }
+        ).apply {
+            id = R.id.formInternalStyleLayout
+            rippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
+        }
     }
 
     override fun onBindItemParentLayout(holder: FormViewHolder, item: FormItem) {

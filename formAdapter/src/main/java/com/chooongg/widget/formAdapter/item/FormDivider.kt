@@ -8,10 +8,10 @@ import com.google.android.material.divider.MaterialDivider
 
 class FormDivider(name: CharSequence, field: String?) : FormItem(name, field) {
 
-    override fun onCreateItemView(adapter: FormPartAdapter, parent: ViewGroup): View {
+    override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View {
         return MaterialDivider(parent.context)
     }
 
-    override fun onBindItemView(adapter: FormPartAdapter, holder: FormViewHolder) {
+    override fun onBindContentView(adapter: FormPartAdapter, holder: FormViewHolder) {
     }
 }

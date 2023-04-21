@@ -6,25 +6,24 @@ import android.view.ViewGroup
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
+import com.chooongg.widget.formAdapter.typeset.FlexBoxTypeset
 import com.chooongg.widget.formAdapter.typeset.Typeset
 
 /**
  * 表单项根样式
  */
-abstract class Style {
+abstract class Style(
+    /**
+     * 默认的排版方式
+     */
+    val defaultTypeset: Typeset?
+) {
 
     /**
      * 是否需要装饰边距
      */
     open var isNeedDecorationMargins = true
         protected set
-
-    /**
-     * 默认排版
-     */
-    open var defaultTypeset: Typeset? = null
-        protected set
-
 
     /**
      * 创建项目的样式布局
