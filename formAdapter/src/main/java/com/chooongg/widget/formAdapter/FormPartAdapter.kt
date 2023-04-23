@@ -1,5 +1,6 @@
 package com.chooongg.widget.formAdapter
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.collection.ArraySet
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -22,10 +23,6 @@ class FormPartAdapter internal constructor(
     val globalAdapter: BaseFormAdapter,
     val style: Style
 ) : RecyclerView.Adapter<FormViewHolder>() {
-
-    companion object {
-        const val NOTIFY_PAYLOADS = "update"
-    }
 
     internal var _recyclerView: WeakReference<RecyclerView>? = null
 
@@ -99,32 +96,7 @@ class FormPartAdapter internal constructor(
                 item.groupIndex = -1
                 if (!item.isRealVisible(globalAdapter.isEditable)) continue@group
                 if (item is MultiColumnForm) {
-                    val multiColumn = ArrayList<FormItem>()
-                    item@ for (it in item.items) {
-                        if (!it.isRealVisible(globalAdapter.isEditable)) continue@item
-                        multiColumn.add(it)
-                    }
-                    // TODO 单行计算改为多列计算
-                    if (multiColumn.isEmpty()) continue@group
-                    var maxWidget = 0
-                    multiColumn.forEachIndexed { index, formItem ->
-                        maxWidget += formItem.spanWeight
-                        formItem.singleLineCount = multiColumn.size
-                        formItem.singleLineIndex = index
-                        groupList.add(formItem)
-                    }
-                    if (multiColumn.size == 1) {
-                        multiColumn[0].spanSize = 120
-                    } else {
-                        multiColumn.forEach {
-                            it.spanSize = (120 / maxWidget) * it.spanWeight
-                        }
-                        if (120 % maxWidget != 0) {
-                            for (i in 0 until 120 % maxWidget) {
-                                multiColumn[i % multiColumn.size].spanSize += 1
-                            }
-                        }
-                    }
+                    disassemblyMultiColumn(groupList, item)
                 } else groupList.add(item)
             }
             while (groupList.size > 0 && !groupList[0].isShowOnEdge) {
@@ -170,18 +142,46 @@ class FormPartAdapter internal constructor(
             }
             tempList.add(groupList)
         }
-        if (creator.dynamicPart) {
-            tempList.forEachIndexed { index, group ->
-                group.forEachIndexed { position, item ->
-                    item.groupIndex = index
-                    item.itemPosition = position
-                }
+        tempList.forEachIndexed { index, group ->
+            group.forEachIndexed { position, item ->
+                item.groupIndex = index
+                item.positionForGroup = position
             }
         }
         asyncDiffer.submitList(ArrayList<FormItem>().apply { tempList.forEach { addAll(it) } })
     }
 
+    private fun disassemblyMultiColumn(finalList: ArrayList<FormItem>, item: MultiColumnForm) {
+        val multiColumn = ArrayList<FormItem>()
+        item@ for (it in item.items) {
+            if (!it.isRealVisible(globalAdapter.isEditable)) continue@item
+            multiColumn.add(it)
+        }
+        // TODO 单行计算改为多列计算
+        if (multiColumn.isEmpty()) return
+        var maxWidget = 0
+        multiColumn.forEachIndexed { index, formItem ->
+            maxWidget += formItem.spanWeight
+            formItem.singleLineCount = multiColumn.size
+            formItem.singleLineIndex = index
+            finalList.add(formItem)
+        }
+        if (multiColumn.size == 1) {
+            multiColumn[0].spanSize = 120
+        } else {
+            multiColumn.forEach {
+                it.spanSize = (120 / maxWidget) * it.spanWeight
+            }
+            if (120 % maxWidget != 0) {
+                for (i in 0 until 120 % maxWidget) {
+                    multiColumn[i % multiColumn.size].spanSize += 1
+                }
+            }
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FormViewHolder {
+        Log.e("FormAdapter", "onCreateViewHolder: viewType = $viewType")
         val styleLayout = style.onCreateItemParent(parent)
         val item = itemFactoryCache.get(viewType)
         val typesetLayout = if (item.isNeedToTypeset) {
@@ -192,8 +192,7 @@ class FormPartAdapter internal constructor(
         val view = item.onCreateContentView(this, typesetLayout ?: styleLayout ?: parent)
         if (typesetLayout != null) {
             (item.typeset ?: style.defaultTypeset)?.also {
-                val pair = it.onCreateMenuButton(typesetLayout)
-                typesetLayout.addView(pair.first, pair.second)
+                it.onCreateMenuButton(typesetLayout)
                 it.addContentView(typesetLayout, view)
             }
         } else styleLayout?.addView(view)
@@ -202,6 +201,8 @@ class FormPartAdapter internal constructor(
 
     override fun onBindViewHolder(holder: FormViewHolder, position: Int) {
         getItem(position).also {
+            it.partPosition = holder.bindingAdapterPosition
+            it.adapterPosition = holder.absoluteAdapterPosition
             onBindParentViewHolder(holder, it)
             it.onBindContentView(this, holder)
         }
@@ -213,6 +214,8 @@ class FormPartAdapter internal constructor(
         payloads: MutableList<Any>
     ) {
         getItem(position).also {
+            it.partPosition = holder.bindingAdapterPosition
+            it.adapterPosition = holder.absoluteAdapterPosition
             onBindParentViewHolder(holder, it)
             it.onBindContentView(this, holder, payloads)
         }

@@ -1,9 +1,9 @@
 package com.chooongg.widget.formAdapter.item
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.view.updateLayoutParams
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
@@ -22,6 +22,12 @@ class FormText(name: CharSequence, field: String?) : FormItem(name, field) {
         holder.getView<MaterialTextView>(R.id.formContent).also {
             it.text = content?.toString()
             it.hint = hint ?: "空"
+            it.updateLayoutParams<MarginLayoutParams> {
+                topMargin = -holder.paddingVerticalLocal
+                bottomMargin = -holder.paddingVerticalLocal
+                leftMargin = -holder.paddingHorizontalLocal
+                rightMargin = -holder.paddingHorizontalLocal
+            }
         }
     }
 }

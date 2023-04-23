@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <integer name="formMaxColumn">2</integer>
+
     <dimen name="formTextSize">14sp</dimen>
 
     <dimen name="formVerticalLocalMarginSize">8dp</dimen>
@@ -14,6 +16,6 @@
     <dimen name="formHorizontalGlobalPaddingSize">16dp</dimen>
 
     <dimen name="formFlexVerticalDividerSize">8dp</dimen>
-    <dimen name="formFlexHorizontalDividerSize">0dp</dimen>
+    <dimen name="formFlexHorizontalDividerSize">8dp</dimen>
 
 </resources>

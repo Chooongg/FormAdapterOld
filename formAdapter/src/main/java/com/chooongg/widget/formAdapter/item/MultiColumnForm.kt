@@ -7,6 +7,11 @@ import com.chooongg.widget.formAdapter.FormViewHolder
 
 class MultiColumnForm : FormItem("", null) {
 
+    /**
+     * 最大列数
+     */
+    var maxColumn = 5
+
     internal var items = ArrayList<FormItem>()
 
     override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View {

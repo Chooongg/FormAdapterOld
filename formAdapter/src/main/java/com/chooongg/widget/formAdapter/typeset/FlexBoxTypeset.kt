@@ -49,7 +49,8 @@ object FlexBoxTypeset : Typeset {
     }
 
     override fun addContentView(parent: ViewGroup, view: View) {
-        parent.findViewById<FlexboxLayout>(R.id.formInternalTypesetFlexBoxLayout)
-            .addView(view, FlexboxLayout.LayoutParams(-2, -2).apply { flexGrow = 1000f })
+        parent.findViewById<FlexboxLayout>(R.id.formInternalTypesetFlexBoxLayout).apply {
+            addView(view, FlexboxLayout.LayoutParams(-2, -2).apply { flexGrow = 1000f })
+        }
     }
 }

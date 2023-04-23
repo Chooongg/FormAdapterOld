@@ -128,11 +128,27 @@ abstract class FormItem(
         internal set
 
     /**
-     * 动态组索引
+     * 组索引
      */
     var groupIndex = -1
         internal set
-    var itemPosition = -1
+
+    /**
+     * 组中的位置
+     */
+    var positionForGroup = -1
+        internal set
+
+    /**
+     * 当前part的索引
+     */
+    var partPosition = -1
+        internal set
+
+    /**
+     * adapter的绝对索引
+     */
+    var adapterPosition = -1
         internal set
 
     /**

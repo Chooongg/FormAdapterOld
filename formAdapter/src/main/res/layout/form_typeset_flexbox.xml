@@ -18,12 +18,11 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         app:alignItems="center"
-        app:dividerDrawableHorizontal="@drawable/form_horizontal_divider"
         app:dividerDrawableVertical="@drawable/form_vertical_divider"
         app:flexWrap="wrap"
         app:justifyContent="center"
         app:maxLine="2"
-        app:showDivider="middle">
+        app:showDividerVertical="middle">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/formInternalNameTextView"

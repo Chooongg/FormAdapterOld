@@ -1,12 +1,13 @@
 package com.chooongg.widget.formAdapter
 
-import androidx.collection.ArraySet
 import androidx.recyclerview.widget.ConcatAdapter
 import com.chooongg.widget.formAdapter.item.FormItem
-import com.chooongg.widget.formAdapter.style.Style
-import com.chooongg.widget.formAdapter.typeset.Typeset
 
 abstract class BaseFormAdapter(isEditable: Boolean = false) {
+
+    companion object {
+        const val NOTIFY_PAYLOADS = "update"
+    }
 
     var isEditable: Boolean = isEditable
         set(value) {
@@ -16,9 +17,15 @@ abstract class BaseFormAdapter(isEditable: Boolean = false) {
 
     internal val adapter = ConcatAdapter()
 
-    internal fun indexPartOf(part:FormPartAdapter) = adapter.adapters.indexOf(part)
+    internal fun indexPartOf(part: FormPartAdapter) = adapter.adapters.indexOf(part)
 
     fun clear() {
         adapter.adapters.forEach { adapter.removeAdapter(it) }
+    }
+
+    fun updateItem(item: FormItem) {
+        if (item.adapterPosition != -1) {
+            adapter.notifyItemChanged(item.adapterPosition, NOTIFY_PAYLOADS)
+        }
     }
 }

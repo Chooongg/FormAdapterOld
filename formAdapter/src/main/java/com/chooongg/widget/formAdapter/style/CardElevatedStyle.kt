@@ -20,10 +20,7 @@ class CardElevatedStyle(defaultTypeset: Typeset? = FlexBoxTypeset) : Style(defau
             parent.context,
             null,
             com.google.android.material.R.attr.materialCardViewElevatedStyle
-        ).apply {
-            id = R.id.formInternalStyleLayout
-            rippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
-        }
+        ).apply { id = R.id.formInternalStyleLayout }
     }
 
     override fun onBindItemParentLayout(holder: FormViewHolder, item: FormItem) {
@@ -57,6 +54,7 @@ class CardElevatedStyle(defaultTypeset: Typeset? = FlexBoxTypeset) : Style(defau
                 } else builder.setBottomRightCornerSize(0f)
             }
             shapeAppearanceModel = builder.build()
+//            rippleColor = ColorStateList.valueOf(Color.parseColor("#01888888"))
         }
     }
 

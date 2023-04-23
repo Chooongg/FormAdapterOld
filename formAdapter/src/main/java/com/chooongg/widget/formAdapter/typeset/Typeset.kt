@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.annotation.GravityInt
+import androidx.core.view.updateLayoutParams
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
@@ -35,29 +36,25 @@ interface Typeset {
      */
     fun addContentView(parent: ViewGroup, view: View)
 
-    fun onCreateMenuButton(parent: ViewGroup): Pair<View, Int> {
-        return Pair(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.form_typeset_default_menu, parent, false).apply {
-                    val paddingVerticalLocal =
-                        resources.getDimensionPixelOffset(R.dimen.formVerticalLocalPaddingSize)
-                    val paddingHorizontalLocal =
-                        resources.getDimensionPixelOffset(R.dimen.formHorizontalLocalPaddingSize)
-                    val insetHorizontal =
-                        (2f * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
-                    setPadding(
-                        paddingHorizontalLocal + insetHorizontal,
-                        paddingVerticalLocal,
-                        paddingHorizontalLocal + insetHorizontal,
-                        paddingVerticalLocal
-                    )
-                    layoutParams = MarginLayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                    ).apply {
-                        marginEnd = -paddingHorizontalLocal
-                    }
-                }, -1
+    fun onCreateMenuButton(parent: ViewGroup) {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.form_typeset_default_menu, parent, false)
+        val paddingVerticalLocal =
+            view.resources.getDimensionPixelOffset(R.dimen.formVerticalLocalPaddingSize)
+        val paddingHorizontalLocal =
+            view.resources.getDimensionPixelOffset(R.dimen.formHorizontalLocalPaddingSize)
+        val insetHorizontal =
+            (2f * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
+        view.setPadding(
+            paddingHorizontalLocal + insetHorizontal,
+            paddingVerticalLocal,
+            paddingHorizontalLocal + insetHorizontal,
+            paddingVerticalLocal
+        )
+        parent.addView(
+            view, MarginLayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+            )
         )
     }
 
@@ -69,6 +66,9 @@ interface Typeset {
                 visibility = View.VISIBLE
                 setOnClickListener {
                     adapter.listener?.onFormMenuClick(adapter, item, holder.itemView, this)
+                }
+                updateLayoutParams<MarginLayoutParams> {
+                    marginEnd = -holder.paddingHorizontalLocal
                 }
             } else {
                 setOnClickListener(null)

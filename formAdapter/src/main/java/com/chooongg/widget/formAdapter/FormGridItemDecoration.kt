@@ -2,6 +2,7 @@ package com.chooongg.widget.formAdapter
 
 import android.content.Context
 import android.graphics.Rect
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
@@ -29,9 +30,10 @@ class FormGridItemDecoration(context: Context, private val formAdapter: BaseForm
             formAdapter.adapter.getWrappedAdapterAndPosition(holder.absoluteAdapterPosition).first
         if (adapter !is FormPartAdapter || !adapter.style.isNeedDecorationMargins) return
         val item = adapter.getItem(holder.bindingAdapterPosition)
+        Log.e("FormAdapter", "getItemOffsets: position = ${holder.absoluteAdapterPosition}")
         outRect.top = if (holder.absoluteAdapterPosition == 0) {
             verticalMarginGlobal
-        } else if (holder.bindingAdapterPosition == 0 || item.itemPosition == 0) {
+        } else if (holder.bindingAdapterPosition == 0 || item.positionForGroup == 0) {
             verticalMarginLocal
         } else if (item.singleLineCount > 1) {
             verticalMarginLocal
