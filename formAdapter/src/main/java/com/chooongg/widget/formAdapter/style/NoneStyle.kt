@@ -13,7 +13,6 @@ import com.chooongg.widget.formAdapter.typeset.Typeset
 object NoneStyle : Style(FlexBoxTypeset) {
 
     override var isNeedDecorationMargins = false
-
     override fun onCreateItemParent(parent: ViewGroup): ViewGroup? = null
     override fun onBindItemParentLayout(holder: FormViewHolder, item: FormItem) = Unit
 

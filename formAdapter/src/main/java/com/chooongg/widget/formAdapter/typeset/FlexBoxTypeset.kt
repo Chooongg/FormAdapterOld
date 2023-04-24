@@ -15,6 +15,7 @@ import com.google.android.material.textview.MaterialTextView
 
 object FlexBoxTypeset : Typeset {
 
+
     override fun onCreateItemTypesetParent(parent: ViewGroup): ViewGroup {
         return LayoutInflater.from(parent.context)
             .inflate(R.layout.form_typeset_flexbox, parent, false) as LinearLayoutCompat
@@ -31,26 +32,25 @@ object FlexBoxTypeset : Typeset {
                     Boundary.GLOBAL -> holder.paddingHorizontalGlobal
                     else -> holder.paddingHorizontalLocal
                 }, when (item.boundary.top) {
-                    Boundary.NONE -> 0
-                    else -> holder.paddingVerticalGlobal - holder.paddingVerticalLocal
+                    Boundary.GLOBAL, Boundary.LOCAL -> holder.paddingHorizontalGlobal
+                    else -> holder.paddingHorizontalLocal
                 }, when (item.boundary.end) {
                     Boundary.GLOBAL -> holder.paddingHorizontalGlobal
                     else -> holder.paddingHorizontalLocal
                 }, when (item.boundary.bottom) {
-                    Boundary.NONE -> 0
-                    else -> holder.paddingVerticalGlobal - holder.paddingVerticalLocal
+                    Boundary.GLOBAL, Boundary.LOCAL -> holder.paddingHorizontalGlobal
+                    else -> holder.paddingHorizontalLocal
                 }
             )
         }
         with(holder.getView<MaterialTextView>(R.id.formInternalNameTextView)) {
             text = item.name
-            text = "1 2 3 4 5 6 7 8 9 0"
         }
     }
 
     override fun addContentView(parent: ViewGroup, view: View) {
         parent.findViewById<FlexboxLayout>(R.id.formInternalTypesetFlexBoxLayout).apply {
-            addView(view, FlexboxLayout.LayoutParams(-2, -2).apply { flexGrow = 1000f })
+            addView(view, FlexboxLayout.LayoutParams(-2, -2).apply { flexGrow = Float.MAX_VALUE })
         }
     }
 }

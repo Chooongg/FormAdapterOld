@@ -18,7 +18,7 @@ abstract class FormItem(
     /**
      * 名称
      */
-    val name: CharSequence,
+    val name: CharSequence?,
     /**
      * 字段
      */
@@ -75,18 +75,26 @@ abstract class FormItem(
      * 菜单文本
      */
     open var menuText: CharSequence? = null
+        set(value) {
+            field = value
+            isShowMenu = field != null || menuIconRes != null
+        }
 
     /**
      * 菜单图标
      */
     @DrawableRes
     open var menuIconRes: Int? = null
+        set(value) {
+            field = value
+            isShowMenu = field != null || menuText != null
+        }
 
     /**
      * 菜单图标大小
      */
     @Px
-    open var menuIconSize: Int = 0
+    open var menuIconSize: Int? = null
 
     /**
      * 是否在组边缘展示
@@ -216,7 +224,7 @@ abstract class FormItem(
      * 检查数据正确性
      */
     open fun checkDataCorrectness(): Boolean {
-        return content != null
+        return if (isRequired) content != null else true
     }
 
     /**

@@ -1,7 +1,5 @@
 package com.chooongg.widget.formAdapter.style
 
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -13,13 +11,13 @@ import com.chooongg.widget.formAdapter.typeset.FlexBoxTypeset
 import com.chooongg.widget.formAdapter.typeset.Typeset
 import com.google.android.material.card.MaterialCardView
 
-class CardElevatedStyle(defaultTypeset: Typeset? = FlexBoxTypeset) : Style(defaultTypeset) {
+class Material3CardElevatedStyle(
+    defaultTypeset: Typeset? = FlexBoxTypeset
+) : Style(defaultTypeset) {
 
     override fun onCreateItemParent(parent: ViewGroup): ViewGroup {
         return MaterialCardView(
-            parent.context,
-            null,
-            com.google.android.material.R.attr.materialCardViewElevatedStyle
+            parent.context, null, com.google.android.material.R.attr.materialCardViewElevatedStyle
         ).apply { id = R.id.formInternalStyleLayout }
     }
 
@@ -54,7 +52,6 @@ class CardElevatedStyle(defaultTypeset: Typeset? = FlexBoxTypeset) : Style(defau
                 } else builder.setBottomRightCornerSize(0f)
             }
             shapeAppearanceModel = builder.build()
-//            rippleColor = ColorStateList.valueOf(Color.parseColor("#01888888"))
         }
     }
 
@@ -68,7 +65,7 @@ class CardElevatedStyle(defaultTypeset: Typeset? = FlexBoxTypeset) : Style(defau
 
     override fun onBindGroupTitle(holder: FormViewHolder, item: FormGroupTitle) {
         with(holder.getView<TextView>(R.id.formContent)) {
-            text = item.name
+            text = item.name ?: resources.getString(R.string.formNone)
         }
     }
 }

@@ -17,7 +17,7 @@ import com.google.android.material.button.MaterialButton
 interface Typeset {
 
     @GravityInt
-    fun contentGravity(): Int = Gravity.CENTER_VERTICAL or Gravity.START
+    fun contentGravity(): Int = Gravity.NO_GRAVITY
 
     /**
      * 创建项目的排版布局
@@ -63,13 +63,17 @@ interface Typeset {
             if (!item.typesetIgnoreMenuButtons() && (item.menuText != null || item.menuIconRes != null)) {
                 text = item.menuText
                 if (item.menuIconRes != null) setIconResource(item.menuIconRes!!) else icon = null
-                visibility = View.VISIBLE
+                iconSize =
+                    item.menuIconSize ?: resources.getDimensionPixelSize(R.dimen.formTextSize)
+                updateLayoutParams<MarginLayoutParams> {
+                    marginEnd = -holder.paddingHorizontalLocal
+                    topMargin = -holder.paddingVerticalLocal
+                    bottomMargin = -holder.paddingVerticalLocal
+                }
                 setOnClickListener {
                     adapter.listener?.onFormMenuClick(adapter, item, holder.itemView, this)
                 }
-                updateLayoutParams<MarginLayoutParams> {
-                    marginEnd = -holder.paddingHorizontalLocal
-                }
+                visibility = View.VISIBLE
             } else {
                 setOnClickListener(null)
                 visibility = View.GONE

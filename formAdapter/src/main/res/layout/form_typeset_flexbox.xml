@@ -18,18 +18,20 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         app:alignItems="center"
+        app:dividerDrawableHorizontal="@drawable/form_horizontal_divider"
         app:dividerDrawableVertical="@drawable/form_vertical_divider"
         app:flexWrap="wrap"
         app:justifyContent="center"
         app:maxLine="2"
+        app:showDividerHorizontal="middle"
         app:showDividerVertical="middle">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/formInternalNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/formVerticalLocalPaddingSize"
-            android:paddingBottom="@dimen/formVerticalLocalPaddingSize"
+            android:hint="@string/formNone"
+            android:minEms="5"
             android:textSize="@dimen/formTextSize"
             app:layout_flexGrow="1.0"
             tools:text="Name" />

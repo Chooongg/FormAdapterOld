@@ -30,7 +30,6 @@ class FormGridItemDecoration(context: Context, private val formAdapter: BaseForm
             formAdapter.adapter.getWrappedAdapterAndPosition(holder.absoluteAdapterPosition).first
         if (adapter !is FormPartAdapter || !adapter.style.isNeedDecorationMargins) return
         val item = adapter.getItem(holder.bindingAdapterPosition)
-        Log.e("FormAdapter", "getItemOffsets: position = ${holder.absoluteAdapterPosition}")
         outRect.top = if (holder.absoluteAdapterPosition == 0) {
             verticalMarginGlobal
         } else if (holder.bindingAdapterPosition == 0 || item.positionForGroup == 0) {

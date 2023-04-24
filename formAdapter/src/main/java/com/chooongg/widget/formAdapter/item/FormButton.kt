@@ -7,7 +7,7 @@ import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
 import com.google.android.material.button.MaterialButton
 
-class FormButton(name: CharSequence, field: String?) : FormItem(name, field) {
+class FormButton(name: CharSequence?, field: String?) : FormItem(name, field) {
 
     override var isNeedToTypeset: Boolean = false
 

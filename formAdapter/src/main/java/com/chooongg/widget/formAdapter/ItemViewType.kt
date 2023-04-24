@@ -8,6 +8,6 @@ import com.chooongg.widget.formAdapter.typeset.Typeset
  * 项目类型
  */
 internal data class ItemViewType(
-    val typeset: Class<out Typeset>?,
+    val typeset: Typeset?,
     val item: Class<out FormItem>
 )

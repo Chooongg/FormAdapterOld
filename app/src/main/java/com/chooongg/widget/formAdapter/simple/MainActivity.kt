@@ -10,8 +10,11 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModel
 import com.chooongg.widget.formAdapter.FormAdapter
+import com.chooongg.widget.formAdapter.addDivider
+import com.chooongg.widget.formAdapter.addText
 import com.chooongg.widget.formAdapter.item.FormText
-import com.chooongg.widget.formAdapter.style.CardElevatedStyle
+import com.chooongg.widget.formAdapter.style.Material3CardElevatedStyle
+import com.chooongg.widget.formAdapter.style.Material3CardOutlinedStyle
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,26 +23,17 @@ class MainActivity : AppCompatActivity() {
 
         init {
             adapter.setNewInstance {
-                addPart(CardElevatedStyle()) {
+                addPart(Material3CardElevatedStyle()) {
+                    partName = "Material3CardElevatedStyle"
                     createGroup {
-                        add(FormText("FormText", null).apply {
-                            content = "This is FormText"
-                            menuIconRes = com.google.android.material.R.drawable.ic_clock_black_24dp
-                        })
-                    }
-                }
-                addPart(CardElevatedStyle()) {
-                    createGroup {
-                        addMultiColumn {
-                            for (i in 0..1) {
-                                add(FormText("FormText", null).apply {
-                                    content = "This is FormText"
-                                })
-                            }
+                        addText("FormText") {
+                            content = "文本"
                         }
+                        addDivider()
+                        addText("FormText")
                     }
                 }
-                addPart(CardElevatedStyle()) {
+                addPart(Material3CardOutlinedStyle()) {
                     createGroup {
                         addMultiColumn {
                             for (i in 0..2) {
@@ -50,7 +44,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                addPart(CardElevatedStyle()) {
+                addPart(Material3CardElevatedStyle()) {
                     createGroup {
                         addMultiColumn {
                             for (i in 0..3) {
@@ -61,12 +55,12 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                addPart(CardElevatedStyle()) {
+                addPart(Material3CardElevatedStyle()) {
                     createGroup {
                         addMultiColumn {
+                            maxColumn = 2
                             for (i in 0..4) {
                                 add(FormText("FormText", null).apply {
-                                    content = "1 2 3 4 5 6 7 8 9 0"
                                 })
                             }
                         }

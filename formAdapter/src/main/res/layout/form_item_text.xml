@@ -3,7 +3,7 @@
     android:id="@+id/formContent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:hint="@string/formNone"
     android:paddingHorizontal="@dimen/formHorizontalLocalPaddingSize"
-    android:paddingVertical="@dimen/formVerticalLocalPaddingSize">
-
-</com.google.android.material.textview.MaterialTextView>
+    android:paddingVertical="@dimen/formVerticalLocalPaddingSize"
+    android:textColor="?colorOnSurface" />

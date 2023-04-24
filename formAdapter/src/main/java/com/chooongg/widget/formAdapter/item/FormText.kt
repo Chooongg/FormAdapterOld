@@ -1,5 +1,6 @@
 package com.chooongg.widget.formAdapter.item
 
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,18 +11,18 @@ import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
 import com.google.android.material.textview.MaterialTextView
 
-class FormText(name: CharSequence, field: String?) : FormItem(name, field) {
+class FormText(name: CharSequence?, field: String?) : FormItem(name, field) {
 
     override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.form_item_text, parent, false)
-        return view
+        return LayoutInflater.from(parent.context).inflate(R.layout.form_item_text, parent, false)
     }
 
     override fun onBindContentView(adapter: FormPartAdapter, holder: FormViewHolder) {
         holder.getView<MaterialTextView>(R.id.formContent).also {
+            it.gravity =
+                (typeset ?: adapter.style.defaultTypeset)?.contentGravity() ?: Gravity.NO_GRAVITY
             it.text = content?.toString()
-            it.hint = hint ?: "空"
+            it.hint = hint ?: it.resources.getString(R.string.formNone)
             it.updateLayoutParams<MarginLayoutParams> {
                 topMargin = -holder.paddingVerticalLocal
                 bottomMargin = -holder.paddingVerticalLocal

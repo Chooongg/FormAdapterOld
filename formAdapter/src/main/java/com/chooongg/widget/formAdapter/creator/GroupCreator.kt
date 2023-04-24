@@ -18,6 +18,7 @@ open class GroupCreator {
             it.isShowOnEdge = creator.isShowOnEdge
         }
         items.add(MultiColumnForm().apply {
+            maxColumn = creator.maxColumn
             items = ArrayList(creator.items)
         })
     }

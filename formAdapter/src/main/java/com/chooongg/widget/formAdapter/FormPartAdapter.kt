@@ -24,7 +24,7 @@ class FormPartAdapter internal constructor(
     val style: Style
 ) : RecyclerView.Adapter<FormViewHolder>() {
 
-    internal var _recyclerView: WeakReference<RecyclerView>? = null
+    private var _recyclerView: WeakReference<RecyclerView>? = null
 
     val recyclerView get() = _recyclerView?.get()
 
@@ -52,7 +52,7 @@ class FormPartAdapter internal constructor(
     }, AsyncDifferConfig.Builder(object : DiffUtil.ItemCallback<FormItem>() {
         override fun areContentsTheSame(oldItem: FormItem, newItem: FormItem) = false
         override fun areItemsTheSame(oldItem: FormItem, newItem: FormItem) =
-            oldItem.name == newItem.name && oldItem.field == newItem.field && oldItem.groupIndex == newItem.groupIndex
+            oldItem.partPosition == newItem.partPosition
     }).build())
 
     fun submitList(block: PartCreator.() -> Unit) {
@@ -88,7 +88,7 @@ class FormPartAdapter internal constructor(
                     ?: "${creator.partName ?: ""}${groupIndex + 1}"
             } else creator.partName
             if (creator.partName != null || creator.dynamicPart) {
-                groupList.add(FormGroupTitle(partName ?: "", null).apply {
+                groupList.add(FormGroupTitle(partName, creator.partField).apply {
 
                 })
             }
@@ -152,46 +152,49 @@ class FormPartAdapter internal constructor(
     }
 
     private fun disassemblyMultiColumn(finalList: ArrayList<FormItem>, item: MultiColumnForm) {
-        val multiColumn = ArrayList<FormItem>()
+        val lines = ArrayList<ArrayList<FormItem>>().apply {
+            add(ArrayList())
+        }
         item@ for (it in item.items) {
             if (!it.isRealVisible(globalAdapter.isEditable)) continue@item
-            multiColumn.add(it)
-        }
-        // TODO 单行计算改为多列计算
-        if (multiColumn.isEmpty()) return
-        var maxWidget = 0
-        multiColumn.forEachIndexed { index, formItem ->
-            maxWidget += formItem.spanWeight
-            formItem.singleLineCount = multiColumn.size
-            formItem.singleLineIndex = index
-            finalList.add(formItem)
-        }
-        if (multiColumn.size == 1) {
-            multiColumn[0].spanSize = 120
-        } else {
-            multiColumn.forEach {
-                it.spanSize = (120 / maxWidget) * it.spanWeight
+            if (lines.last().size >= item.maxColumn) {
+                lines.add(ArrayList())
             }
-            if (120 % maxWidget != 0) {
-                for (i in 0 until 120 % maxWidget) {
-                    multiColumn[i % multiColumn.size].spanSize += 1
+            lines.last().add(it)
+        }
+        for (multiColumn in lines) {
+            if (multiColumn.isEmpty()) continue
+            var maxWidget = 0
+            multiColumn.forEachIndexed { index, formItem ->
+                maxWidget += formItem.spanWeight
+                formItem.singleLineCount = multiColumn.size
+                formItem.singleLineIndex = index
+                finalList.add(formItem)
+            }
+            if (multiColumn.size == 1) {
+                multiColumn[0].spanSize = 120
+            } else {
+                multiColumn.forEach {
+                    it.spanSize = (120 / maxWidget) * it.spanWeight
+                }
+                if (120 % maxWidget != 0) {
+                    for (i in 0 until 120 % maxWidget) {
+                        multiColumn[i % multiColumn.size].spanSize += 1
+                    }
                 }
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FormViewHolder {
-        Log.e("FormAdapter", "onCreateViewHolder: viewType = $viewType")
         val styleLayout = style.onCreateItemParent(parent)
         val item = itemFactoryCache.get(viewType)
-        val typesetLayout = if (item.isNeedToTypeset) {
-            (item.typeset ?: style.defaultTypeset)
-                ?.onCreateItemTypesetParent(styleLayout ?: parent)
-        } else null
+        val itemViewType = itemTypeLookup.valueAt(viewType)
+        val typesetLayout = itemViewType?.typeset?.onCreateItemTypesetParent(styleLayout ?: parent)
         if (styleLayout != null && typesetLayout != null) styleLayout.addView(typesetLayout)
         val view = item.onCreateContentView(this, typesetLayout ?: styleLayout ?: parent)
         if (typesetLayout != null) {
-            (item.typeset ?: style.defaultTypeset)?.also {
+            itemViewType.typeset.also {
                 it.onCreateMenuButton(typesetLayout)
                 it.addContentView(typesetLayout, view)
             }
@@ -226,6 +229,9 @@ class FormPartAdapter internal constructor(
         style.onBindItemParentLayout(holder, item)
         if (item.isNeedToTypeset) {
             (item.typeset ?: style.defaultTypeset)?.also {
+                val type = itemFactoryCache.get(holder.itemViewType)
+                Log.e("PartAdapter", "ItemType: ${type::class.java.simpleName}")
+                Log.e("PartAdapter", "Item: ${item::class.java.simpleName}")
                 it.onBindItemTypesetParent(this, holder, item)
                 it.onBindMenuButton(this, holder, item)
             }
@@ -236,9 +242,8 @@ class FormPartAdapter internal constructor(
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
-        val typeset = item.typeset ?: style.defaultTypeset
         val itemType = ItemViewType(
-            if (typeset != null) typeset::class.java else null,
+            if (item.isNeedToTypeset) item.typeset ?: style.defaultTypeset else null,
             item::class.java
         )
         if (!itemTypeLookup.contains(itemType)) {
