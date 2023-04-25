@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.res.use
+import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
@@ -84,13 +85,28 @@ class Material3CardElevatedStyle(
     override fun onCreateGroupTitle(parent: ViewGroup) = TextView(parent.context).apply {
         id = R.id.formContent
         setTextAppearance(
-            context, com.google.android.material.R.style.TextAppearance_Material3_HeadlineMedium
+            context, com.google.android.material.R.style.TextAppearance_Material3_HeadlineSmall
         )
     }
 
     override fun onBindGroupTitle(holder: FormViewHolder, item: FormGroupTitle) {
         with(holder.getView<TextView>(R.id.formContent)) {
             text = item.name ?: resources.getString(R.string.formNone)
+            setPaddingRelative(
+                when (item.boundary.start) {
+                    Boundary.GLOBAL -> holder.paddingHorizontalGlobal
+                    else -> holder.paddingHorizontalLocal
+                }, when (item.boundary.top) {
+                    Boundary.GLOBAL, Boundary.LOCAL -> holder.paddingHorizontalGlobal
+                    else -> holder.paddingHorizontalLocal
+                }, when (item.boundary.end) {
+                    Boundary.GLOBAL -> holder.paddingHorizontalGlobal
+                    else -> holder.paddingHorizontalLocal
+                }, when (item.boundary.bottom) {
+                    Boundary.GLOBAL, Boundary.LOCAL -> holder.paddingHorizontalGlobal
+                    else -> holder.paddingHorizontalLocal
+                }
+            )
         }
     }
 }

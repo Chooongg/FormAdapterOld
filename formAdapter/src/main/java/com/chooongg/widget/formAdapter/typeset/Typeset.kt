@@ -9,7 +9,6 @@ import android.view.ViewGroup.MarginLayoutParams
 import androidx.annotation.GravityInt
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePaddingRelative
 import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
@@ -37,7 +36,7 @@ abstract class Typeset(val ems: Int, val emsMode: FormEmsMode) {
     ) {
         val typesetLayout = holder.getViewOrNull<LinearLayoutCompat>(R.id.formInternalTypesetLayout)
         (typesetLayout ?: adapter.style.getStyleParentLayout(holder)).apply {
-            updatePaddingRelative(
+            setPaddingRelative(
                 when (item.boundary.start) {
                     Boundary.GLOBAL -> holder.paddingHorizontalGlobal
                     else -> holder.paddingHorizontalLocal
