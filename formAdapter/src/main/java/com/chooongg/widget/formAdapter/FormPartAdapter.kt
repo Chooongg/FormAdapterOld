@@ -88,6 +88,7 @@ class FormPartAdapter internal constructor(
             }
             group@ for (item in group) {
                 item.groupIndex = -1
+                item.isAfterTheGroupTitle = false
                 if (!item.isRealVisible(globalAdapter.isEditable)) continue@group
                 if (item is MultiColumnForm) {
                     disassemblyMultiColumn(groupList, item)
@@ -102,7 +103,14 @@ class FormPartAdapter internal constructor(
             groupList.forEachIndexed { index, formItem ->
                 formItem.boundary.top = if (index == 0) {
                     if (partIndex == 0) Boundary.GLOBAL else Boundary.LOCAL
-                } else Boundary.NONE
+                } else {
+                    if (index == 1) {
+                        if (groupList[0] is FormGroupTitle) {
+                            formItem.isAfterTheGroupTitle = true
+                        }
+                    }
+                    Boundary.NONE
+                }
                 if (formItem.singleLineCount > 1) {
                     if (formItem.singleLineIndex == 0) {
                         formItem.boundary.start = Boundary.GLOBAL

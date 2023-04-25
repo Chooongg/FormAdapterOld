@@ -148,6 +148,12 @@ abstract class FormItem(
         internal set
 
     /**
+     * 是否在组标题后面
+     */
+    var isAfterTheGroupTitle = false
+        internal set
+
+    /**
      * 当前part的索引
      */
     var partPosition = -1

@@ -34,13 +34,12 @@ abstract class Typeset(val ems: Int, val emsMode: FormEmsMode) {
         holder: FormViewHolder,
         item: FormItem
     ) {
-        val typesetLayout = holder.getViewOrNull<LinearLayoutCompat>(R.id.formInternalTypesetLayout)
-        (typesetLayout ?: adapter.style.getStyleParentLayout(holder)).apply {
+        holder.getViewOrNull<LinearLayoutCompat>(R.id.formInternalTypesetLayout)?.apply {
             setPaddingRelative(
                 when (item.boundary.start) {
                     Boundary.GLOBAL -> holder.paddingHorizontalGlobal
                     else -> holder.paddingHorizontalLocal
-                }, when (item.boundary.top) {
+                }, if (item.isAfterTheGroupTitle) Boundary.GLOBAL else when (item.boundary.top) {
                     Boundary.GLOBAL, Boundary.LOCAL -> holder.paddingHorizontalGlobal
                     else -> holder.paddingHorizontalLocal
                 }, when (item.boundary.end) {
