@@ -3,10 +3,10 @@ package com.chooongg.widget.formAdapter.style
 import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup
+import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
-import com.chooongg.widget.formAdapter.typeset.FlexBoxTypeset
 import com.chooongg.widget.formAdapter.typeset.Typeset
 
 /**
@@ -16,7 +16,7 @@ abstract class Style(
     /**
      * 默认的排版方式
      */
-    val defaultTypeset: Typeset?
+    val defaultTypeset: Typeset
 ) {
 
     /**
@@ -32,9 +32,10 @@ abstract class Style(
      */
     abstract fun onCreateItemParent(parent: ViewGroup): ViewGroup?
 
+    abstract fun getStyleParentLayout(holder: FormViewHolder): View
+
     /**
      * 绑定项目的样式布局
-     * @param parent Item的父布局
      */
     abstract fun onBindItemParentLayout(holder: FormViewHolder, item: FormItem)
 

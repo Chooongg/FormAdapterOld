@@ -1,8 +1,6 @@
 package com.chooongg.widget.formAdapter
 
-import android.util.Log
 import android.view.ViewGroup
-import androidx.collection.ArraySet
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -13,6 +11,7 @@ import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.FormItem
 import com.chooongg.widget.formAdapter.item.MultiColumnForm
 import com.chooongg.widget.formAdapter.style.Style
+import com.chooongg.widget.formAdapter.typeset.NoneTypeset
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,10 +29,6 @@ class FormPartAdapter internal constructor(
 
     var adapterScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
         internal set
-
-    private val itemFactoryCache = ItemFactoryCache()
-
-    internal val itemTypeLookup = ArraySet<ItemViewType>()
 
     var listener: FormEventListener? = null
         internal set
@@ -67,7 +62,6 @@ class FormPartAdapter internal constructor(
     }
 
     fun update() {
-        itemFactoryCache.clear()
         if (!this::creator.isInitialized) {
             asyncDiffer.submitList(null)
             return
@@ -188,13 +182,12 @@ class FormPartAdapter internal constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FormViewHolder {
         val styleLayout = style.onCreateItemParent(parent)
-        val item = itemFactoryCache.get(viewType)
-        val itemViewType = itemTypeLookup.valueAt(viewType)
-        val typesetLayout = itemViewType?.typeset?.onCreateItemTypesetParent(styleLayout ?: parent)
+        val typeInfo = globalAdapter.findItemViewTypeInfo(viewType)
+        val typesetLayout = typeInfo.typeset.onCreateItemTypesetParent(styleLayout ?: parent)
         if (styleLayout != null && typesetLayout != null) styleLayout.addView(typesetLayout)
-        val view = item.onCreateContentView(this, typesetLayout ?: styleLayout ?: parent)
+        val view = typeInfo.item.onCreateContentView(this, typesetLayout ?: styleLayout ?: parent)
         if (typesetLayout != null) {
-            itemViewType.typeset.also {
+            typeInfo.typeset.also {
                 it.onCreateMenuButton(typesetLayout)
                 it.addContentView(typesetLayout, view)
             }
@@ -227,14 +220,10 @@ class FormPartAdapter internal constructor(
     private fun onBindParentViewHolder(holder: FormViewHolder, item: FormItem) {
         holder.itemView.setOnClickListener { listener?.onFormClick(this, item, holder.itemView) }
         style.onBindItemParentLayout(holder, item)
-        if (item.isNeedToTypeset) {
-            (item.typeset ?: style.defaultTypeset)?.also {
-                val type = itemFactoryCache.get(holder.itemViewType)
-                Log.e("PartAdapter", "ItemType: ${type::class.java.simpleName}")
-                Log.e("PartAdapter", "Item: ${item::class.java.simpleName}")
-                it.onBindItemTypesetParent(this, holder, item)
-                it.onBindMenuButton(this, holder, item)
-            }
+        globalAdapter.findItemViewTypeInfo(holder.itemViewType).typeset.also {
+            it.onBindItemTypesetParentPadding(this, holder, item)
+            it.onBindItemTypesetParent(this, holder, item)
+            it.onBindMenuButton(this, holder, item)
         }
     }
 
@@ -242,18 +231,11 @@ class FormPartAdapter internal constructor(
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
-        val itemType = ItemViewType(
-            if (item.isNeedToTypeset) item.typeset ?: style.defaultTypeset else null,
-            item::class.java
+        return globalAdapter.getItemViewType(
+            style,
+            if (item.isNeedToTypeset) item.typeset ?: style.defaultTypeset else NoneTypeset,
+            item
         )
-        if (!itemTypeLookup.contains(itemType)) {
-            itemTypeLookup.add(itemType)
-        }
-        val viewType = itemTypeLookup.indexOf(itemType)
-        if (!itemFactoryCache.contains(viewType)) {
-            itemFactoryCache.register(viewType, item)
-        }
-        return viewType
     }
 
     override fun getItemCount() = asyncDiffer.currentList.size

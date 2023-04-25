@@ -19,8 +19,9 @@ class FormText(name: CharSequence?, field: String?) : FormItem(name, field) {
 
     override fun onBindContentView(adapter: FormPartAdapter, holder: FormViewHolder) {
         holder.getView<MaterialTextView>(R.id.formContent).also {
-            it.gravity =
-                (typeset ?: adapter.style.defaultTypeset)?.contentGravity() ?: Gravity.NO_GRAVITY
+            it.gravity = if (isNeedToTypeset) {
+                (typeset ?: adapter.style.defaultTypeset).contentGravity()
+            } else Gravity.NO_GRAVITY
             it.text = content?.toString()
             it.hint = hint ?: it.resources.getString(R.string.formNone)
             it.updateLayoutParams<MarginLayoutParams> {

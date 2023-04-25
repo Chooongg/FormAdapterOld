@@ -31,9 +31,11 @@ class MainActivity : AppCompatActivity() {
                         }
                         addDivider()
                         addText("FormText")
+
                     }
                 }
                 addPart(Material3CardOutlinedStyle()) {
+                    partName = "Material3CardOutlinedStyle"
                     createGroup {
                         addMultiColumn {
                             for (i in 0..2) {

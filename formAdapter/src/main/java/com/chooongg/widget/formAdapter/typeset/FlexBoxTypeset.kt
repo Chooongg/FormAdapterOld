@@ -6,15 +6,19 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.updatePaddingRelative
 import com.chooongg.widget.formAdapter.Boundary
+import com.chooongg.widget.formAdapter.FormManager
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
+import com.chooongg.widget.formAdapter.enum.FormEmsMode
 import com.chooongg.widget.formAdapter.item.FormItem
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.textview.MaterialTextView
 
-object FlexBoxTypeset : Typeset {
-
+class FlexBoxTypeset(
+    ems: Int = FormManager.defaultEmsSize,
+    emsMode: FormEmsMode = FormEmsMode.MIN
+) : Typeset(ems, emsMode) {
 
     override fun onCreateItemTypesetParent(parent: ViewGroup): ViewGroup {
         return LayoutInflater.from(parent.context)
@@ -26,23 +30,6 @@ object FlexBoxTypeset : Typeset {
         holder: FormViewHolder,
         item: FormItem
     ) {
-        with(holder.getView<LinearLayoutCompat>(R.id.formInternalTypesetLayout)) {
-            updatePaddingRelative(
-                when (item.boundary.start) {
-                    Boundary.GLOBAL -> holder.paddingHorizontalGlobal
-                    else -> holder.paddingHorizontalLocal
-                }, when (item.boundary.top) {
-                    Boundary.GLOBAL, Boundary.LOCAL -> holder.paddingHorizontalGlobal
-                    else -> holder.paddingHorizontalLocal
-                }, when (item.boundary.end) {
-                    Boundary.GLOBAL -> holder.paddingHorizontalGlobal
-                    else -> holder.paddingHorizontalLocal
-                }, when (item.boundary.bottom) {
-                    Boundary.GLOBAL, Boundary.LOCAL -> holder.paddingHorizontalGlobal
-                    else -> holder.paddingHorizontalLocal
-                }
-            )
-        }
         with(holder.getView<MaterialTextView>(R.id.formInternalNameTextView)) {
             text = item.name
         }

@@ -7,36 +7,69 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.annotation.GravityInt
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePaddingRelative
+import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
+import com.chooongg.widget.formAdapter.enum.FormEmsMode
 import com.chooongg.widget.formAdapter.item.FormItem
 import com.google.android.material.button.MaterialButton
 
-interface Typeset {
+abstract class Typeset(val ems: Int, val emsMode: FormEmsMode) {
 
     @GravityInt
-    fun contentGravity(): Int = Gravity.NO_GRAVITY
+    open fun contentGravity(): Int = Gravity.NO_GRAVITY
 
     /**
      * 创建项目的排版布局
      * @param parent 父布局
      * @return 返回排版布局, 如果不需要创建则返回 null
      */
-    fun onCreateItemTypesetParent(parent: ViewGroup): ViewGroup?
+    abstract fun onCreateItemTypesetParent(parent: ViewGroup): ViewGroup?
+
+    open fun onBindItemTypesetParentPadding(
+        adapter: FormPartAdapter,
+        holder: FormViewHolder,
+        item: FormItem
+    ) {
+        val typesetLayout = holder.getViewOrNull<LinearLayoutCompat>(R.id.formInternalTypesetLayout)
+        (typesetLayout ?: adapter.style.getStyleParentLayout(holder)).apply {
+            updatePaddingRelative(
+                when (item.boundary.start) {
+                    Boundary.GLOBAL -> holder.paddingHorizontalGlobal
+                    else -> holder.paddingHorizontalLocal
+                }, when (item.boundary.top) {
+                    Boundary.GLOBAL, Boundary.LOCAL -> holder.paddingHorizontalGlobal
+                    else -> holder.paddingHorizontalLocal
+                }, when (item.boundary.end) {
+                    Boundary.GLOBAL -> holder.paddingHorizontalGlobal
+                    else -> holder.paddingHorizontalLocal
+                }, when (item.boundary.bottom) {
+                    Boundary.GLOBAL, Boundary.LOCAL -> holder.paddingHorizontalGlobal
+                    else -> holder.paddingHorizontalLocal
+                }
+            )
+        }
+    }
 
     /**
      * 绑定项目的排版布局
      */
-    fun onBindItemTypesetParent(adapter: FormPartAdapter, holder: FormViewHolder, item: FormItem)
+    abstract fun onBindItemTypesetParent(
+        adapter: FormPartAdapter,
+        holder: FormViewHolder,
+        item: FormItem
+    )
 
     /**
      * 添加内容布局
      */
-    fun addContentView(parent: ViewGroup, view: View)
+    abstract fun addContentView(parent: ViewGroup, view: View)
 
-    fun onCreateMenuButton(parent: ViewGroup) {
+    open fun onCreateMenuButton(parent: ViewGroup) {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.form_typeset_default_menu, parent, false)
         val paddingVerticalLocal =
@@ -58,7 +91,7 @@ interface Typeset {
         )
     }
 
-    fun onBindMenuButton(adapter: FormPartAdapter, holder: FormViewHolder, item: FormItem) {
+    open fun onBindMenuButton(adapter: FormPartAdapter, holder: FormViewHolder, item: FormItem) {
         with(holder.getView<MaterialButton>(R.id.formInternalMenuButton)) {
             if (!item.typesetIgnoreMenuButtons() && (item.menuText != null || item.menuIconRes != null)) {
                 text = item.menuText
@@ -79,5 +112,21 @@ interface Typeset {
                 visibility = View.GONE
             }
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Typeset) return false
+
+        if (ems != other.ems) return false
+        if (emsMode != other.emsMode) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = ems
+        result = 31 * result + emsMode.hashCode()
+        return result
     }
 }

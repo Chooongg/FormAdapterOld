@@ -1,5 +1,6 @@
 package com.chooongg.widget.formAdapter.style
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.chooongg.widget.formAdapter.FormViewHolder
@@ -10,10 +11,12 @@ import com.chooongg.widget.formAdapter.typeset.FlexBoxTypeset
 import com.chooongg.widget.formAdapter.typeset.HorizontalTypeset
 import com.chooongg.widget.formAdapter.typeset.Typeset
 
-object NoneStyle : Style(FlexBoxTypeset) {
+object NoneStyle : Style(FlexBoxTypeset()) {
 
     override var isNeedDecorationMargins = false
     override fun onCreateItemParent(parent: ViewGroup): ViewGroup? = null
+    override fun getStyleParentLayout(holder: FormViewHolder) = holder.itemView
+
     override fun onBindItemParentLayout(holder: FormViewHolder, item: FormItem) = Unit
 
     @Suppress("DEPRECATION")

@@ -1,6 +1,5 @@
 package com.chooongg.widget.formAdapter
 
-import android.content.res.Resources
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chooongg.widget.formAdapter.creator.FormCreator
@@ -31,9 +30,7 @@ class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
         }
         recyclerView.adapter = adapter
         for (i in recyclerView.itemDecorationCount - 1 downTo 0) {
-            if (recyclerView.getItemDecorationAt(i) is FormGridItemDecoration) {
-                recyclerView.removeItemDecorationAt(i)
-            }
+            recyclerView.removeItemDecorationAt(i)
         }
         recyclerView.addItemDecoration(FormGridItemDecoration(recyclerView.context, this))
     }
@@ -55,16 +52,14 @@ class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
         part.submitList(block)
     }
 
-    fun update(isOnlyForm: Boolean = false) {
+    fun update() {
         adapter.adapters.forEach {
-            if (it is FormPartAdapter) {
-                it.update()
-            } else {
-                if (!isOnlyForm) it.notifyItemRangeChanged(0, it.itemCount)
-            }
+            if (it is FormPartAdapter) it.update()
         }
     }
 
-    private fun dp2px(dp: Float) =
-        (dp * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
+    fun clear() {
+        adapter.adapters.forEach { adapter.removeAdapter(it) }
+        _recyclerView?.get()?.recycledViewPool?.clear()
+    }
 }
