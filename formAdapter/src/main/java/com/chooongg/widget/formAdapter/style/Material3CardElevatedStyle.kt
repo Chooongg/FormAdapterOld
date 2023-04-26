@@ -1,6 +1,5 @@
 package com.chooongg.widget.formAdapter.style
 
-import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -9,17 +8,14 @@ import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
-import com.chooongg.widget.formAdapter.item.FormItem
-import com.chooongg.widget.formAdapter.typeset.FlexBoxTypeset
+import com.chooongg.widget.formAdapter.item.BaseForm
+import com.chooongg.widget.formAdapter.typeset.HorizontalTypeset
 import com.chooongg.widget.formAdapter.typeset.Typeset
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.shape.ShapeAppearanceModel
 
 class Material3CardElevatedStyle(
-    defaultTypeset: Typeset = FlexBoxTypeset()
+    defaultTypeset: Typeset = HorizontalTypeset()
 ) : Style(defaultTypeset) {
-
-    private lateinit var shape: ShapeAppearanceModel
 
     override fun onCreateItemParent(parent: ViewGroup): ViewGroup {
         return MaterialCardView(
@@ -31,50 +27,46 @@ class Material3CardElevatedStyle(
         return holder.getView<MaterialCardView>(R.id.formInternalStyleLayout)
     }
 
-    override fun onBindItemParentLayout(holder: FormViewHolder, item: FormItem) {
-        if (!this::shape.isInitialized) {
-            val shapeAppearanceId = with(TypedValue()) {
-                holder.itemView.context.theme.resolveAttribute(
-                    com.google.android.material.R.attr.materialCardViewElevatedStyle, this, true
-                )
-                holder.itemView.context.obtainStyledAttributes(
-                    resourceId,
-                    intArrayOf(com.google.android.material.R.attr.shapeAppearance)
-                ).use {
-                    it.getResourceId(0, 0)
-                }
+    override fun onBindItemParentLayout(holder: FormViewHolder, item: BaseForm) {
+        val shapeCornerSize = with(holder.itemView.context) {
+            obtainStyledAttributes(
+                obtainStyledAttributes(
+                    intArrayOf(com.google.android.material.R.attr.materialCardViewElevatedStyle)
+                ).use { it.getResourceId(0, 0) },
+                intArrayOf(com.google.android.material.R.attr.shapeAppearance)
+            ).use { it.getResourceId(0, 0) }.let { resId ->
+                obtainStyledAttributes(
+                    resId, intArrayOf(com.google.android.material.R.attr.cornerSize)
+                ).use { it.getDimensionPixelSize(0, 0) }
             }
-            shape =
-                ShapeAppearanceModel.builder(holder.itemView.context, shapeAppearanceId, 0).build()
         }
         with(holder.getView<MaterialCardView>(R.id.formInternalStyleLayout)) {
             val builder = shapeAppearanceModel.toBuilder()
             if (layoutDirection == View.LAYOUT_DIRECTION_LTR) {
                 if (item.boundary.top != 0 && item.boundary.start != 0) {
-                    builder.setTopLeftCorner(shape.topLeftCorner)
+                    builder.setTopLeftCornerSize(shapeCornerSize.toFloat())
                 } else builder.setTopLeftCornerSize(0f)
                 if (item.boundary.top != 0 && item.boundary.end != 0) {
-                    builder.setTopRightCorner(shape.topRightCorner)
+                    builder.setTopRightCornerSize(shapeCornerSize.toFloat())
                 } else builder.setTopRightCornerSize(0f)
                 if (item.boundary.bottom != 0 && item.boundary.start != 0) {
-                    builder.setBottomLeftCorner(shape.bottomLeftCorner)
+                    builder.setBottomLeftCornerSize(shapeCornerSize.toFloat())
                 } else builder.setBottomLeftCornerSize(0f)
                 if (item.boundary.bottom != 0 && item.boundary.end != 0) {
-                    builder.setBottomRightCorner(shape.bottomRightCorner)
+                    builder.setBottomRightCornerSize(shapeCornerSize.toFloat())
                 } else builder.setBottomRightCornerSize(0f)
             } else {
                 if (item.boundary.top != 0 && item.boundary.end != 0) {
-                    builder.setTopLeftCorner(shape.topLeftCorner)
+                    builder.setTopLeftCornerSize(shapeCornerSize.toFloat())
                 } else builder.setTopLeftCornerSize(0f)
                 if (item.boundary.top != 0 && item.boundary.start != 0) {
-                    builder.setTopRightCorner(shape.topRightCorner)
+                    builder.setTopRightCornerSize(shapeCornerSize.toFloat())
                 } else builder.setTopRightCornerSize(0f)
                 if (item.boundary.bottom != 0 && item.boundary.end != 0) {
-                    builder.setBottomLeftCorner(shape.bottomLeftCorner)
+                    builder.setBottomLeftCornerSize(shapeCornerSize.toFloat())
                 } else builder.setBottomLeftCornerSize(0f)
                 if (item.boundary.bottom != 0 && item.boundary.start != 0) {
-                    builder.setBottomRightCorner(shape.bottomRightCorner)
-
+                    builder.setBottomRightCornerSize(shapeCornerSize.toFloat())
                 } else builder.setBottomRightCornerSize(0f)
             }
             shapeAppearanceModel = builder.build()
@@ -85,7 +77,7 @@ class Material3CardElevatedStyle(
     override fun onCreateGroupTitle(parent: ViewGroup) = TextView(parent.context).apply {
         id = R.id.formContent
         setTextAppearance(
-            context, com.google.android.material.R.style.TextAppearance_Material3_HeadlineSmall
+            context, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium
         )
     }
 

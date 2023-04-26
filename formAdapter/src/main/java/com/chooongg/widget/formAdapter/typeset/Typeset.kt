@@ -14,7 +14,7 @@ import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
 import com.chooongg.widget.formAdapter.enum.FormEmsMode
-import com.chooongg.widget.formAdapter.item.FormItem
+import com.chooongg.widget.formAdapter.item.BaseForm
 import com.google.android.material.button.MaterialButton
 
 abstract class Typeset(val ems: Int, val emsMode: FormEmsMode) {
@@ -32,14 +32,14 @@ abstract class Typeset(val ems: Int, val emsMode: FormEmsMode) {
     open fun onBindItemTypesetParentPadding(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
-        item: FormItem
+        item: BaseForm
     ) {
         holder.getViewOrNull<LinearLayoutCompat>(R.id.formInternalTypesetLayout)?.apply {
             setPaddingRelative(
                 when (item.boundary.start) {
                     Boundary.GLOBAL -> holder.paddingHorizontalGlobal
                     else -> holder.paddingHorizontalLocal
-                }, if (item.isAfterTheGroupTitle) Boundary.GLOBAL else when (item.boundary.top) {
+                }, when (item.boundary.top) {
                     Boundary.GLOBAL, Boundary.LOCAL -> holder.paddingHorizontalGlobal
                     else -> holder.paddingHorizontalLocal
                 }, when (item.boundary.end) {
@@ -59,7 +59,7 @@ abstract class Typeset(val ems: Int, val emsMode: FormEmsMode) {
     abstract fun onBindItemTypesetParent(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
-        item: FormItem
+        item: BaseForm
     )
 
     /**
@@ -89,7 +89,7 @@ abstract class Typeset(val ems: Int, val emsMode: FormEmsMode) {
         )
     }
 
-    open fun onBindMenuButton(adapter: FormPartAdapter, holder: FormViewHolder, item: FormItem) {
+    open fun onBindMenuButton(adapter: FormPartAdapter, holder: FormViewHolder, item: BaseForm) {
         with(holder.getView<MaterialButton>(R.id.formInternalMenuButton)) {
             if (!item.typesetIgnoreMenuButtons() && (item.menuText != null || item.menuIconRes != null)) {
                 text = item.menuText
@@ -102,7 +102,7 @@ abstract class Typeset(val ems: Int, val emsMode: FormEmsMode) {
                     bottomMargin = -holder.paddingVerticalLocal
                 }
                 setOnClickListener {
-                    adapter.listener?.onFormMenuClick(adapter, item, holder.itemView, this)
+                    adapter.globalAdapter.listener?.onFormMenuClick(adapter, item, holder.itemView, this)
                 }
                 visibility = View.VISIBLE
             } else {

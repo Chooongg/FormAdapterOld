@@ -1,6 +1,6 @@
 package com.chooongg.widget.formAdapter
 
-import com.chooongg.widget.formAdapter.item.FormItem
+import com.chooongg.widget.formAdapter.item.BaseForm
 import com.chooongg.widget.formAdapter.style.Style
 import com.chooongg.widget.formAdapter.typeset.Typeset
 
@@ -10,7 +10,7 @@ import com.chooongg.widget.formAdapter.typeset.Typeset
 internal class TypeInfo(
     val style: Class<Style>,
     val typeset: Typeset,
-    val item: FormItem
+    val item: BaseForm
 ) {
 
     override fun toString(): String {

@@ -11,7 +11,7 @@ import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
 import com.google.android.material.textview.MaterialTextView
 
-class FormText(name: CharSequence?, field: String?) : FormItem(name, field) {
+class FormText(name: CharSequence?, field: String?) : BaseForm(name, field) {
 
     override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View {
         return LayoutInflater.from(parent.context).inflate(R.layout.form_item_text, parent, false)
@@ -22,7 +22,7 @@ class FormText(name: CharSequence?, field: String?) : FormItem(name, field) {
             it.gravity = if (isNeedToTypeset) {
                 (typeset ?: adapter.style.defaultTypeset).contentGravity()
             } else Gravity.NO_GRAVITY
-            it.text = content?.toString()
+            it.text = getContentText()
             it.hint = hint ?: it.resources.getString(R.string.formNone)
             it.updateLayoutParams<MarginLayoutParams> {
                 topMargin = -holder.paddingVerticalLocal

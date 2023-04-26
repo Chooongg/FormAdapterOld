@@ -1,9 +1,7 @@
 package com.chooongg.widget.formAdapter
 
-import android.util.Log
-import androidx.collection.ArraySet
 import androidx.recyclerview.widget.ConcatAdapter
-import com.chooongg.widget.formAdapter.item.FormItem
+import com.chooongg.widget.formAdapter.item.BaseForm
 import com.chooongg.widget.formAdapter.style.Style
 import com.chooongg.widget.formAdapter.typeset.Typeset
 
@@ -24,15 +22,18 @@ abstract class BaseFormAdapter(isEditable: Boolean = false) {
 
     internal val itemTypePool = ArrayList<TypeInfo>()
 
+    var listener: FormEventListener? = null
+        internal set
+
     internal fun indexPartOf(part: FormPartAdapter) = adapter.adapters.indexOf(part)
 
-    fun updateItem(item: FormItem) {
+    fun updateItem(item: BaseForm) {
         if (item.adapterPosition != -1) {
             adapter.notifyItemChanged(item.adapterPosition, NOTIFY_PAYLOADS)
         }
     }
 
-    internal fun getItemViewType(style: Style, typeset: Typeset, item: FormItem): Int {
+    internal fun getItemViewType(style: Style, typeset: Typeset, item: BaseForm): Int {
         val info = TypeInfo(style.javaClass, typeset, item)
         if (!itemTypePool.contains(info)) {
             itemTypePool.add(info)

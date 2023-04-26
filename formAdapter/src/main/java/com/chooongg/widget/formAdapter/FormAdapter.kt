@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chooongg.widget.formAdapter.creator.FormCreator
 import com.chooongg.widget.formAdapter.creator.PartCreator
+import com.chooongg.widget.formAdapter.item.BaseForm
 import com.chooongg.widget.formAdapter.style.NoneStyle
 import com.chooongg.widget.formAdapter.style.Style
 import java.lang.ref.WeakReference
@@ -12,7 +13,7 @@ class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
 
     internal var _recyclerView: WeakReference<RecyclerView>? = null
 
-    fun bind(recyclerView: RecyclerView) {
+    fun bind(recyclerView: RecyclerView, listener: FormEventListener? = null) {
         _recyclerView = WeakReference(recyclerView)
         recyclerView.layoutManager = GridLayoutManager(recyclerView.context, 120).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -28,6 +29,7 @@ class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
                 }
             }
         }
+        this.listener = listener
         recyclerView.adapter = adapter
         for (i in recyclerView.itemDecorationCount - 1 downTo 0) {
             recyclerView.removeItemDecorationAt(i)
@@ -56,6 +58,10 @@ class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
         adapter.adapters.forEach {
             if (it is FormPartAdapter) it.update()
         }
+    }
+
+    fun scrollToItem(item: BaseForm) {
+        _recyclerView?.get()?.smoothScrollToPosition(item.adapterPosition)
     }
 
     fun clear() {

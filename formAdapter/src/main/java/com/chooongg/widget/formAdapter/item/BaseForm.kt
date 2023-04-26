@@ -12,13 +12,13 @@ import com.chooongg.widget.formAdapter.enum.FormOutputMode
 import com.chooongg.widget.formAdapter.enum.FormVisibilityMode
 import com.chooongg.widget.formAdapter.typeset.Typeset
 import org.json.JSONObject
-import kotlin.reflect.KClass
+import kotlin.random.Random
 
-abstract class FormItem(
+abstract class BaseForm(
     /**
      * 名称
      */
-    val name: CharSequence?,
+    var name: CharSequence?,
     /**
      * 字段
      */
@@ -29,12 +29,6 @@ abstract class FormItem(
      * 扩展字段和内容
      */
     private var extensionFieldAndContent: HashMap<String, Any?>? = null
-
-    /**
-     * 只读展示类型
-     */
-    open var readOnlyType: KClass<out FormItem> = this::class
-        protected set
 
     /**
      * 提示
@@ -148,12 +142,6 @@ abstract class FormItem(
         internal set
 
     /**
-     * 是否在组标题后面
-     */
-    var isAfterTheGroupTitle = false
-        internal set
-
-    /**
      * 当前part的索引
      */
     var partPosition = -1
@@ -164,6 +152,11 @@ abstract class FormItem(
      */
     var adapterPosition = -1
         internal set
+
+    /**
+     * 反重复代码
+     */
+    val antiRepeatCode = System.currentTimeMillis() + Random.nextLong(3000)
 
     /**
      * 设置扩展内容
@@ -274,8 +267,19 @@ abstract class FormItem(
         payloads: MutableList<Any>?
     ) = onBindContentView(adapter, holder)
 
+    open fun setItemClick(
+        adapter: FormPartAdapter,
+        holder: FormViewHolder
+    ) {
+//        holder.itemView.setOnClickListener {
+//            adapter.globalAdapter.listener?.onFormClick(adapter, this, it)
+//        }
+    }
+
     /**
      * 排版是否忽略排版按钮
      */
     open fun typesetIgnoreMenuButtons() = false
+
+    open fun getContentText(): CharSequence? = content?.toString()
 }

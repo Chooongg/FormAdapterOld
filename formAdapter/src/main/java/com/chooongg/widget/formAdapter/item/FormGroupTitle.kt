@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 
-class FormGroupTitle(name: CharSequence?, field: String?) : FormItem(name, field) {
+class FormGroupTitle internal constructor(name: CharSequence?, field: String?) :
+    BaseForm(name, field) {
 
     override var isNeedToTypeset: Boolean = false
 

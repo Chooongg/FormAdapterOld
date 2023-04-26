@@ -1,10 +1,10 @@
 package com.chooongg.widget.formAdapter.creator
 
-import com.chooongg.widget.formAdapter.item.FormItem
+import com.chooongg.widget.formAdapter.item.BaseForm
 
 class PartCreator {
 
-    internal val groups = mutableListOf<MutableList<out FormItem>>()
+    internal val groups = mutableListOf<MutableList<out BaseForm>>()
 
     /**
      * 片段名称

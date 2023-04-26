@@ -6,12 +6,12 @@ import androidx.annotation.IntRange
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 
-class MultiColumnForm : FormItem(null, null) {
+class MultiColumnForm : BaseForm(null, null) {
 
     @IntRange(from = 1, to = 5)
     var maxColumn = 2
 
-    internal var items = ArrayList<FormItem>()
+    internal var items = ArrayList<BaseForm>()
 
     override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View {
         return View(parent.context)

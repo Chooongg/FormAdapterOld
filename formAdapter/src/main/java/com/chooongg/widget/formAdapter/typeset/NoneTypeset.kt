@@ -8,20 +8,21 @@ import com.chooongg.widget.formAdapter.FormManager
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.enum.FormEmsMode
-import com.chooongg.widget.formAdapter.item.FormItem
+import com.chooongg.widget.formAdapter.item.BaseForm
 
 /**
  * 无排版
  */
 object NoneTypeset : Typeset(FormManager.defaultEmsSize, FormEmsMode.NONE) {
-    override fun onCreateItemTypesetParent(parent: ViewGroup): ViewGroup? = null
 
+    override fun onCreateItemTypesetParent(parent: ViewGroup): ViewGroup? = null
     override fun onBindItemTypesetParentPadding(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
-        item: FormItem
+        item: BaseForm
     ) {
         adapter.style.getStyleParentLayout(holder).apply {
+            if (this !is ViewGroup) return@apply
             updatePaddingRelative(
                 when (item.boundary.start) {
                     Boundary.GLOBAL -> holder.paddingHorizontalGlobal
@@ -43,7 +44,7 @@ object NoneTypeset : Typeset(FormManager.defaultEmsSize, FormEmsMode.NONE) {
     override fun onBindItemTypesetParent(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
-        item: FormItem
+        item: BaseForm
     ) = Unit
 
     override fun addContentView(parent: ViewGroup, view: View) {}
@@ -53,6 +54,6 @@ object NoneTypeset : Typeset(FormManager.defaultEmsSize, FormEmsMode.NONE) {
     override fun onBindMenuButton(
         adapter: FormPartAdapter,
         holder: FormViewHolder,
-        item: FormItem
+        item: BaseForm
     ) = Unit
 }

@@ -1,24 +1,27 @@
 package com.chooongg.widget.formAdapter.creator
 
-import com.chooongg.widget.formAdapter.item.FormItem
+import com.chooongg.widget.formAdapter.item.BaseForm
 import com.chooongg.widget.formAdapter.item.MultiColumnForm
+import com.chooongg.widget.formAdapter.typeset.FlexBoxTypeset
 
 open class GroupCreator {
 
-    internal val items = mutableListOf<FormItem>()
+    internal val items = mutableListOf<BaseForm>()
 
-    fun add(item: FormItem) {
+    fun add(item: BaseForm) {
+        item.menuIconRes = com.google.android.material.R.drawable.ic_clock_black_24dp
         items.add(item)
     }
 
     fun addMultiColumn(block: MultiColumnCreator.() -> Unit) {
         val creator = MultiColumnCreator().apply(block)
-        creator.items.forEach {
-            if (it is MultiColumnForm) throw IllegalArgumentException("GroupForm can not be added to SingleLine")
-            it.isShowOnEdge = creator.isShowOnEdge
-        }
         items.add(MultiColumnForm().apply {
             maxColumn = creator.maxColumn
+            creator.items.forEach {
+                if (it is MultiColumnForm) throw IllegalArgumentException("GroupForm can not be added to SingleLine")
+                it.isShowOnEdge = creator.isShowOnEdge
+                if (it.typeset == null) it.typeset = typeset ?: FlexBoxTypeset()
+            }
             items = ArrayList(creator.items)
         })
     }

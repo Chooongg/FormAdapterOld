@@ -2,13 +2,15 @@ package com.chooongg.widget.formAdapter.item
 
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
+import androidx.core.view.updateLayoutParams
 import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
 import com.google.android.material.divider.MaterialDivider
 
-class FormDivider : FormItem(null, null) {
+class FormDivider : BaseForm(null, null) {
 
     override var isNeedToTypeset: Boolean = false
 
@@ -21,6 +23,7 @@ class FormDivider : FormItem(null, null) {
     override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View {
         return MaterialDivider(parent.context).apply {
             id = R.id.formContent
+            layoutParams = MarginLayoutParams(-1, -2)
         }
     }
 
@@ -38,6 +41,10 @@ class FormDivider : FormItem(null, null) {
                     else -> holder.paddingHorizontalLocal
                 }
             } else insetEnd
+            updateLayoutParams<MarginLayoutParams> {
+                topMargin = holder.paddingVerticalLocal
+                bottomMargin = holder.paddingVerticalLocal
+            }
         }
     }
 }

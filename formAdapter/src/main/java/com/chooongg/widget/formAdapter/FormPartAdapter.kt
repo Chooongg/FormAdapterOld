@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.chooongg.widget.formAdapter.creator.PartCreator
+import com.chooongg.widget.formAdapter.item.BaseForm
 import com.chooongg.widget.formAdapter.item.FormGroupTitle
-import com.chooongg.widget.formAdapter.item.FormItem
 import com.chooongg.widget.formAdapter.item.MultiColumnForm
 import com.chooongg.widget.formAdapter.style.Style
 import com.chooongg.widget.formAdapter.typeset.NoneTypeset
@@ -30,9 +30,6 @@ class FormPartAdapter internal constructor(
     var adapterScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
         internal set
 
-    var listener: FormEventListener? = null
-        internal set
-
     internal lateinit var creator: PartCreator
 
     private val asyncDiffer = AsyncListDiffer(object : ListUpdateCallback {
@@ -44,10 +41,12 @@ class FormPartAdapter internal constructor(
         override fun onMoved(fromPosition: Int, toPosition: Int) =
             notifyItemMoved(fromPosition, toPosition)
 
-    }, AsyncDifferConfig.Builder(object : DiffUtil.ItemCallback<FormItem>() {
-        override fun areContentsTheSame(oldItem: FormItem, newItem: FormItem) = false
-        override fun areItemsTheSame(oldItem: FormItem, newItem: FormItem) =
-            oldItem.partPosition == newItem.partPosition
+    }, AsyncDifferConfig.Builder(object : DiffUtil.ItemCallback<BaseForm>() {
+        override fun areContentsTheSame(oldItem: BaseForm, newItem: BaseForm) = false
+        override fun areItemsTheSame(oldItem: BaseForm, newItem: BaseForm) =
+            if (oldItem is FormGroupTitle && newItem is FormGroupTitle) {
+                oldItem.groupIndex == newItem.groupIndex && oldItem.name == newItem.name
+            } else oldItem.antiRepeatCode == newItem.antiRepeatCode
     }).build())
 
     fun submitList(block: PartCreator.() -> Unit) {
@@ -67,7 +66,7 @@ class FormPartAdapter internal constructor(
             return
         }
         val partIndex = globalAdapter.indexPartOf(this)
-        val tempList = mutableListOf<MutableList<FormItem>>()
+        val tempList = mutableListOf<MutableList<BaseForm>>()
         if (creator.dynamicPart) {
             if (creator.groups.size < creator.dynamicPartMinGroupCount) {
                 if (creator.dynamicPartCreateGroupBlock != null) {
@@ -76,7 +75,7 @@ class FormPartAdapter internal constructor(
             }
         }
         creator.groups.forEachIndexed { groupIndex, group ->
-            val groupList = ArrayList<FormItem>()
+            val groupList = ArrayList<BaseForm>()
             val partName = if (creator.dynamicPart) {
                 creator.dynamicPartNameFormatBlock?.invoke(creator.partName, groupIndex)
                     ?: "${creator.partName ?: ""}${groupIndex + 1}"
@@ -88,7 +87,6 @@ class FormPartAdapter internal constructor(
             }
             group@ for (item in group) {
                 item.groupIndex = -1
-                item.isAfterTheGroupTitle = false
                 if (!item.isRealVisible(globalAdapter.isEditable)) continue@group
                 if (item is MultiColumnForm) {
                     disassemblyMultiColumn(groupList, item)
@@ -103,14 +101,7 @@ class FormPartAdapter internal constructor(
             groupList.forEachIndexed { index, formItem ->
                 formItem.boundary.top = if (index == 0) {
                     if (partIndex == 0) Boundary.GLOBAL else Boundary.LOCAL
-                } else {
-                    if (index == 1) {
-                        if (groupList[0] is FormGroupTitle) {
-                            formItem.isAfterTheGroupTitle = true
-                        }
-                    }
-                    Boundary.NONE
-                }
+                } else Boundary.NONE
                 if (formItem.singleLineCount > 1) {
                     if (formItem.singleLineIndex == 0) {
                         formItem.boundary.start = Boundary.GLOBAL
@@ -150,11 +141,11 @@ class FormPartAdapter internal constructor(
                 item.positionForGroup = position
             }
         }
-        asyncDiffer.submitList(ArrayList<FormItem>().apply { tempList.forEach { addAll(it) } })
+        asyncDiffer.submitList(ArrayList<BaseForm>().apply { tempList.forEach { addAll(it) } })
     }
 
-    private fun disassemblyMultiColumn(finalList: ArrayList<FormItem>, item: MultiColumnForm) {
-        val lines = ArrayList<ArrayList<FormItem>>().apply {
+    private fun disassemblyMultiColumn(finalList: ArrayList<BaseForm>, item: MultiColumnForm) {
+        val lines = ArrayList<ArrayList<BaseForm>>().apply {
             add(ArrayList())
         }
         item@ for (it in item.items) {
@@ -196,8 +187,8 @@ class FormPartAdapter internal constructor(
         val view = typeInfo.item.onCreateContentView(this, typesetLayout ?: styleLayout ?: parent)
         if (typesetLayout != null) {
             typeInfo.typeset.also {
-                it.onCreateMenuButton(typesetLayout)
                 it.addContentView(typesetLayout, view)
+                it.onCreateMenuButton(typesetLayout)
             }
         } else styleLayout?.addView(view)
         return FormViewHolder(styleLayout ?: typesetLayout ?: view)
@@ -225,8 +216,8 @@ class FormPartAdapter internal constructor(
         }
     }
 
-    private fun onBindParentViewHolder(holder: FormViewHolder, item: FormItem) {
-        holder.itemView.setOnClickListener { listener?.onFormClick(this, item, holder.itemView) }
+    private fun onBindParentViewHolder(holder: FormViewHolder, item: BaseForm) {
+        item.setItemClick(this, holder)
         style.onBindItemParentLayout(holder, item)
         globalAdapter.findItemViewTypeInfo(holder.itemViewType).typeset.also {
             it.onBindItemTypesetParentPadding(this, holder, item)
