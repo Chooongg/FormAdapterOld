@@ -7,8 +7,8 @@ import androidx.core.content.res.use
 import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
-import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.item.BaseForm
+import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.typeset.HorizontalTypeset
 import com.chooongg.widget.formAdapter.typeset.Typeset
 import com.google.android.material.card.MaterialCardView
