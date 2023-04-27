@@ -1,5 +1,7 @@
 package com.chooongg.widget.formAdapter.style
 
+import android.graphics.Color
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -20,7 +22,13 @@ class Material3CardElevatedStyle(
     override fun onCreateItemParent(parent: ViewGroup): ViewGroup {
         return MaterialCardView(
             parent.context, null, com.google.android.material.R.attr.materialCardViewElevatedStyle
-        ).apply { id = R.id.formInternalStyleLayout }
+        ).apply {
+            id = R.id.formInternalStyleLayout
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                outlineSpotShadowColor = Color.TRANSPARENT
+                outlineAmbientShadowColor = Color.TRANSPARENT
+            }
+        }
     }
 
     override fun getStyleParentLayout(holder: FormViewHolder): View {

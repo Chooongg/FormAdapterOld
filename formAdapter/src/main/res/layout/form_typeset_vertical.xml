@@ -7,7 +7,9 @@
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    app:divider="@drawable/form_vertical_divider"
+    app:showDividers="middle">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/formInternalNameTextView"

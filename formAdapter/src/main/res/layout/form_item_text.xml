@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:hint="@string/formNone"
-    android:paddingHorizontal="@dimen/formHorizontalLocalPaddingSize"
-    android:paddingVertical="@dimen/formVerticalLocalPaddingSize"
+    android:paddingStart="@dimen/formHorizontalLocalPaddingSize"
+    android:paddingTop="@dimen/formVerticalLocalPaddingSize"
+    android:paddingEnd="@dimen/formHorizontalLocalPaddingSize"
+    android:paddingBottom="@dimen/formVerticalLocalPaddingSize"
     android:textColor="?colorOnSurface" />

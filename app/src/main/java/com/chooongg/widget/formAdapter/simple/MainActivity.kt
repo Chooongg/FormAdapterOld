@@ -10,7 +10,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.RecyclerView
 import com.chooongg.widget.formAdapter.FormAdapter
 import com.chooongg.widget.formAdapter.FormEventListener
 import com.chooongg.widget.formAdapter.FormPartAdapter

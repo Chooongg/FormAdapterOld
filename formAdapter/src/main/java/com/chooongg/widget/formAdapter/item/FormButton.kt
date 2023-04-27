@@ -53,30 +53,28 @@ class FormButton(name: CharSequence?, field: String?) : BaseForm(name, field) {
     }
 
     override fun onBindContentView(adapter: FormPartAdapter, holder: FormViewHolder) {
-        with(holder.getView<MaterialButton>(R.id.formContent)) {
-            isEnabled = isRealEnable(adapter.globalAdapter.isEditable)
-            text = name
-            hint = this@FormButton.hint ?: resources.getString(R.string.formNone)
-            if (iconRes != null) setIconResource(iconRes!!) else icon = null
-            updateMarginsBasedOnBoundary(holder, this)
-
-            val textSize = resources.getDimensionPixelSize(R.dimen.formTextSize)
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize.toFloat())
-            iconSize = this@FormButton.iconSize ?: textSize
-            iconGravity = this@FormButton.iconGravity
+        holder.getView<MaterialButton>(R.id.formContent).also { view ->
+            view.isEnabled = isRealEnable(adapter.globalAdapter.isEditable)
+            view.text = name
+            view.hint = hint ?: view.resources.getString(R.string.formNone)
+            updateMarginsBasedOnBoundary(holder, view)
+            val textSize = view.resources.getDimensionPixelSize(R.dimen.formTextSize)
+            view.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize.toFloat())
+            view.iconSize = iconSize ?: textSize
+            view.iconGravity = iconGravity
             val style = when (buttonStyle) {
-                ButtonStyle.DEFAULT -> context.obtainStyledAttributes(
+                ButtonStyle.DEFAULT -> view.context.obtainStyledAttributes(
                     intArrayOf(com.google.android.material.R.attr.materialButtonStyle)
                 ).use { it.getResourceId(0, 0) }
 
-                ButtonStyle.TEXT -> context.obtainStyledAttributes(
+                ButtonStyle.TEXT -> view.context.obtainStyledAttributes(
                     intArrayOf(com.google.android.material.R.attr.borderlessButtonStyle)
                 ).use { it.getResourceId(0, 0) }
 
                 ButtonStyle.TONAL ->
                     com.google.android.material.R.style.Widget_Material3_Button_TonalButton
 
-                ButtonStyle.OUTLINED -> context.obtainStyledAttributes(
+                ButtonStyle.OUTLINED -> view.context.obtainStyledAttributes(
                     intArrayOf(com.google.android.material.R.attr.materialButtonOutlinedStyle)
                 ).use { it.getResourceId(0, 0) }
 
@@ -86,35 +84,35 @@ class FormButton(name: CharSequence?, field: String?) : BaseForm(name, field) {
                 ButtonStyle.UN_ELEVATED ->
                     com.google.android.material.R.style.Widget_Material3_Button_UnelevatedButton
             }
-            val wrap = MaterialThemeOverlay.wrap(context, null, 0, style)
-            setTextColor(wrap.obtainStyledAttributes(
+            val wrap = MaterialThemeOverlay.wrap(view.context, null, 0, style)
+            view.setTextColor(wrap.obtainStyledAttributes(
                 style, intArrayOf(android.R.attr.textColor)
             ).use { it.getColorStateList(0) })
-            iconTint = if (this@FormButton.iconTint == null) {
+            view.iconTint = if (iconTint == null) {
                 wrap.obtainStyledAttributes(
                     style, intArrayOf(androidx.appcompat.R.attr.iconTint)
                 ).use { it.getColorStateList(0) }
-            } else this@FormButton.iconTint!!.invoke(context)
-            backgroundTintList = wrap.obtainStyledAttributes(
+            } else iconTint!!.invoke(view.context)
+            view.backgroundTintList = wrap.obtainStyledAttributes(
                 style, intArrayOf(androidx.appcompat.R.attr.backgroundTint)
             ).use { it.getColorStateList(0) }
-            strokeColor = wrap.obtainStyledAttributes(
+            view.strokeColor = wrap.obtainStyledAttributes(
                 style, intArrayOf(com.google.android.material.R.attr.strokeColor)
             ).use { it.getColorStateList(0) }
-            strokeWidth = wrap.obtainStyledAttributes(
+            view.strokeWidth = wrap.obtainStyledAttributes(
                 style, intArrayOf(com.google.android.material.R.attr.strokeWidth)
             ).use { it.getDimensionPixelSize(0, 0) }
-            rippleColor = wrap.obtainStyledAttributes(
+            view.rippleColor = wrap.obtainStyledAttributes(
                 style, intArrayOf(com.google.android.material.R.attr.rippleColor)
             ).use { it.getColorStateList(0) }
-            elevation = wrap.obtainStyledAttributes(
+            view.elevation = wrap.obtainStyledAttributes(
                 style, intArrayOf(com.google.android.material.R.attr.strokeWidth)
             ).use { it.getDimension(0, 0f) }
 
             val stateListId = wrap.obtainStyledAttributes(
                 style, intArrayOf(android.R.attr.stateListAnimator)
             ).use { it.getResourceId(0, 0) }
-            stateListAnimator = if (stateListId != 0) {
+            view.stateListAnimator = if (stateListId != 0) {
                 AnimatorInflater.loadStateListAnimator(wrap, stateListId)
             } else null
         }

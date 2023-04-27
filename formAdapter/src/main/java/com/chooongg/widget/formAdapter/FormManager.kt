@@ -1,5 +1,5 @@
 package com.chooongg.widget.formAdapter
 
 object FormManager {
-    var defaultEmsSize = 6
+    var defaultEmsSize = 5
 }

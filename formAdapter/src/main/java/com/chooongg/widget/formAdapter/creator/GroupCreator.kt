@@ -9,7 +9,6 @@ open class GroupCreator {
     internal val items = mutableListOf<BaseForm>()
 
     fun add(item: BaseForm) {
-        item.menuIconRes = com.google.android.material.R.drawable.ic_clock_black_24dp
         items.add(item)
     }
 

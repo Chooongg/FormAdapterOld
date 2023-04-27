@@ -267,17 +267,13 @@ abstract class BaseForm(
         payloads: MutableList<Any>?
     ) = onBindContentView(adapter, holder)
 
-    open fun setItemClick(
-        adapter: FormPartAdapter,
-        holder: FormViewHolder
-    ) {
-//        holder.itemView.setOnClickListener {
-//            adapter.globalAdapter.listener?.onFormClick(adapter, this, it)
-//        }
-    }
+    /**
+     * 设置点击事件
+     */
+    open fun setItemClick(adapter: FormPartAdapter, holder: FormViewHolder) {}
 
     /**
-     * 排版是否忽略排版按钮
+     * 排版是否忽略菜单按钮
      */
     open fun typesetIgnoreMenuButtons() = false
 

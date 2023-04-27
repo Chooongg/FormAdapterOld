@@ -102,7 +102,9 @@ abstract class Typeset(val ems: Int, val emsMode: FormEmsMode) {
                     bottomMargin = -holder.paddingVerticalLocal
                 }
                 setOnClickListener {
-                    adapter.globalAdapter.listener?.onFormMenuClick(adapter, item, holder.itemView, this)
+                    adapter.globalAdapter.listener?.onFormMenuClick(
+                        adapter, item, holder.itemView, this
+                    )
                 }
                 visibility = View.VISIBLE
             } else {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/formInternalMenuButton"
     style="?attr/materialIconButtonStyle"
     android:layout_width="wrap_content"
@@ -17,5 +17,4 @@
     android:paddingEnd="0dp"
     android:paddingBottom="0dp"
     android:textSize="@dimen/formTextSize"
-    app:icon="@android:drawable/ic_menu_close_clear_cancel"
-    app:iconSize="@dimen/formTextSize" />
+    tools:icon="@android:drawable/ic_menu_close_clear_cancel" />
