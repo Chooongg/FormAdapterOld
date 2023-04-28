@@ -1,15 +1,19 @@
 package com.chooongg.widget.formAdapter
 
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.chooongg.widget.formAdapter.item.BaseForm
 import com.chooongg.widget.formAdapter.style.Style
 import com.chooongg.widget.formAdapter.typeset.Typeset
+import java.lang.ref.WeakReference
 
 abstract class BaseFormAdapter(isEditable: Boolean = false) {
 
     companion object {
         const val NOTIFY_PAYLOADS = "update"
     }
+
+    internal var _recyclerView: WeakReference<RecyclerView>? = null
 
     var isEditable: Boolean = isEditable
         set(value) {
@@ -42,4 +46,8 @@ abstract class BaseFormAdapter(isEditable: Boolean = false) {
     }
 
     internal fun findItemViewTypeInfo(itemType: Int) = itemTypePool[itemType]
+
+    fun clearFocus(){
+        _recyclerView?.get()?.focusedChild?.clearFocus()
+    }
 }

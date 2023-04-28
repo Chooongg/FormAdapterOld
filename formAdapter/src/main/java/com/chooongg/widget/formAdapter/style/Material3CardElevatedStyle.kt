@@ -5,7 +5,6 @@ import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.res.use
 import com.chooongg.widget.formAdapter.Boundary
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.R
@@ -14,6 +13,7 @@ import com.chooongg.widget.formAdapter.item.FormGroupTitle
 import com.chooongg.widget.formAdapter.typeset.HorizontalTypeset
 import com.chooongg.widget.formAdapter.typeset.Typeset
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.shape.ShapeAppearanceModel
 
 class Material3CardElevatedStyle(
     defaultTypeset: Typeset = HorizontalTypeset()
@@ -24,6 +24,7 @@ class Material3CardElevatedStyle(
             parent.context, null, com.google.android.material.R.attr.materialCardViewElevatedStyle
         ).apply {
             id = R.id.formInternalStyleLayout
+            tag = shapeAppearanceModel.toBuilder().build()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 outlineSpotShadowColor = Color.TRANSPARENT
                 outlineAmbientShadowColor = Color.TRANSPARENT
@@ -36,45 +37,34 @@ class Material3CardElevatedStyle(
     }
 
     override fun onBindItemParentLayout(holder: FormViewHolder, item: BaseForm) {
-        val shapeCornerSize = with(holder.itemView.context) {
-            obtainStyledAttributes(
-                obtainStyledAttributes(
-                    intArrayOf(com.google.android.material.R.attr.materialCardViewElevatedStyle)
-                ).use { it.getResourceId(0, 0) },
-                intArrayOf(com.google.android.material.R.attr.shapeAppearance)
-            ).use { it.getResourceId(0, 0) }.let { resId ->
-                obtainStyledAttributes(
-                    resId, intArrayOf(com.google.android.material.R.attr.cornerSize)
-                ).use { it.getDimensionPixelSize(0, 0) }
-            }
-        }
         with(holder.getView<MaterialCardView>(R.id.formInternalStyleLayout)) {
+            val originalShape = tag as? ShapeAppearanceModel ?: return
             val builder = shapeAppearanceModel.toBuilder()
             if (layoutDirection == View.LAYOUT_DIRECTION_LTR) {
                 if (item.boundary.top != 0 && item.boundary.start != 0) {
-                    builder.setTopLeftCornerSize(shapeCornerSize.toFloat())
+                    builder.setTopLeftCornerSize(originalShape.topLeftCornerSize)
                 } else builder.setTopLeftCornerSize(0f)
                 if (item.boundary.top != 0 && item.boundary.end != 0) {
-                    builder.setTopRightCornerSize(shapeCornerSize.toFloat())
+                    builder.setTopRightCornerSize(originalShape.topRightCornerSize)
                 } else builder.setTopRightCornerSize(0f)
                 if (item.boundary.bottom != 0 && item.boundary.start != 0) {
-                    builder.setBottomLeftCornerSize(shapeCornerSize.toFloat())
+                    builder.setBottomLeftCornerSize(originalShape.bottomLeftCornerSize)
                 } else builder.setBottomLeftCornerSize(0f)
                 if (item.boundary.bottom != 0 && item.boundary.end != 0) {
-                    builder.setBottomRightCornerSize(shapeCornerSize.toFloat())
+                    builder.setBottomRightCornerSize(originalShape.bottomRightCornerSize)
                 } else builder.setBottomRightCornerSize(0f)
             } else {
                 if (item.boundary.top != 0 && item.boundary.end != 0) {
-                    builder.setTopLeftCornerSize(shapeCornerSize.toFloat())
+                    builder.setTopLeftCornerSize(originalShape.topLeftCornerSize)
                 } else builder.setTopLeftCornerSize(0f)
                 if (item.boundary.top != 0 && item.boundary.start != 0) {
-                    builder.setTopRightCornerSize(shapeCornerSize.toFloat())
+                    builder.setTopRightCornerSize(originalShape.topRightCornerSize)
                 } else builder.setTopRightCornerSize(0f)
                 if (item.boundary.bottom != 0 && item.boundary.end != 0) {
-                    builder.setBottomLeftCornerSize(shapeCornerSize.toFloat())
+                    builder.setBottomLeftCornerSize(originalShape.bottomLeftCornerSize)
                 } else builder.setBottomLeftCornerSize(0f)
                 if (item.boundary.bottom != 0 && item.boundary.start != 0) {
-                    builder.setBottomRightCornerSize(shapeCornerSize.toFloat())
+                    builder.setBottomRightCornerSize(originalShape.bottomRightCornerSize)
                 } else builder.setBottomRightCornerSize(0f)
             }
             shapeAppearanceModel = builder.build()

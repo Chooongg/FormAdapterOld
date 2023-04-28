@@ -47,8 +47,14 @@ class MainActivity : AppCompatActivity(), FormEventListener {
                             content = "文本"
                         }
                         addDivider()
-                        addText("FormText")
-                        addInput("FormInput")
+                        addText("FormText") {
+                            menuIconRes = com.google.android.material.R.drawable.ic_clock_black_24dp
+                        }
+                        addInput("FormInput") {
+                            prefixText = "前缀"
+                            suffixText = "后缀"
+                            maxLines = 2
+                        }
                         addButton("FormButton") {
                             iconGravity = MaterialButton.ICON_GRAVITY_TEXT_END
                             iconRes = com.google.android.material.R.drawable.ic_clock_black_24dp

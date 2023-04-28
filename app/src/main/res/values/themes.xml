@@ -3,5 +3,6 @@
     <style name="Theme.FormAdapter" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="isMaterial3DynamicColorApplied">true</item>
     </style>
 </resources>

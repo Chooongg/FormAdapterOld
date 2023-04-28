@@ -18,5 +18,5 @@ interface FormEventListener {
     /**
      * 表单内容更改事件
      */
-    fun onFormContentChanged(manager: FormAdapter, item: BaseForm, itemView: View) {}
+    fun onFormContentChanged(adapter: FormPartAdapter, item: BaseForm, itemView: View) {}
 }

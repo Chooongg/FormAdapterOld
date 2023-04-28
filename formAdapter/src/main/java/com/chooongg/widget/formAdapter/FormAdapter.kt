@@ -11,8 +11,6 @@ import java.lang.ref.WeakReference
 
 class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
 
-    internal var _recyclerView: WeakReference<RecyclerView>? = null
-
     fun bind(recyclerView: RecyclerView, listener: FormEventListener? = null) {
         _recyclerView = WeakReference(recyclerView)
         recyclerView.layoutManager = GridLayoutManager(recyclerView.context, 120).apply {
@@ -20,12 +18,7 @@ class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
                 override fun getSpanSize(position: Int): Int {
                     val pair = adapter.getWrappedAdapterAndPosition(position)
                     val adapter = pair.first
-                    return if (adapter is FormPartAdapter) {
-                        val item = adapter.getItem(pair.second)
-                        item.spanSize
-                    } else {
-                        120
-                    }
+                    return if (adapter is FormPartAdapter) adapter.getItem(pair.second).spanSize else 120
                 }
             }
         }
@@ -35,6 +28,13 @@ class FormAdapter(isEditable: Boolean = false) : BaseFormAdapter(isEditable) {
             recyclerView.removeItemDecorationAt(i)
         }
         recyclerView.addItemDecoration(FormGridItemDecoration(recyclerView.context, this))
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING && recyclerView.focusedChild != null) {
+                    recyclerView.focusedChild.clearFocus()
+                }
+            }
+        })
     }
 
     fun setNewInstance(block: FormCreator.() -> Unit) {

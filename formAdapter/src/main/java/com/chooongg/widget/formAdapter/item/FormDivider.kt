@@ -20,12 +20,11 @@ class FormDivider : BaseForm(null, null) {
 
     var insetEnd = -1
 
-    override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View {
-        return MaterialDivider(parent.context).apply {
+    override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View =
+        MaterialDivider(parent.context).apply {
             id = R.id.formContent
             layoutParams = MarginLayoutParams(-1, -2)
         }
-    }
 
     override fun onBindContentView(adapter: FormPartAdapter, holder: FormViewHolder) {
         with(holder.getView<MaterialDivider>(R.id.formContent)) {

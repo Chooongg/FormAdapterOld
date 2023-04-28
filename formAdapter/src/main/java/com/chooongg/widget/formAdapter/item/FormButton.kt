@@ -45,12 +45,11 @@ class FormButton(name: CharSequence?, field: String?) : BaseForm(name, field) {
     @Deprecated("invalid property", ReplaceWith("name"))
     override var menuIconSize: Int? = null
 
-    override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View {
-        return MaterialButton(parent.context).apply {
+    override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View =
+        MaterialButton(parent.context).apply {
             id = R.id.formContent
             layoutParams = MarginLayoutParams(-1, -2)
         }
-    }
 
     override fun onBindContentView(adapter: FormPartAdapter, holder: FormViewHolder) {
         holder.getView<MaterialButton>(R.id.formContent).also { view ->

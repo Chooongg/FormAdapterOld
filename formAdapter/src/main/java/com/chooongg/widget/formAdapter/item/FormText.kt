@@ -13,9 +13,9 @@ import com.google.android.material.textview.MaterialTextView
 
 class FormText(name: CharSequence?, field: String?) : BaseForm(name, field) {
 
-    override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View {
-        return LayoutInflater.from(parent.context).inflate(R.layout.form_item_text, parent, false)
-    }
+    override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View =
+        LayoutInflater.from(parent.context).inflate(R.layout.form_item_text, parent, false)
+
 
     override fun onBindContentView(adapter: FormPartAdapter, holder: FormViewHolder) {
         holder.getView<MaterialTextView>(R.id.formContent).also {

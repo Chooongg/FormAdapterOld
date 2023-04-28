@@ -13,9 +13,8 @@ class MultiColumnForm : BaseForm(null, null) {
 
     internal var items = ArrayList<BaseForm>()
 
-    override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View {
-        return View(parent.context)
-    }
+    override fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View =
+        View(parent.context)
 
     override fun onBindContentView(adapter: FormPartAdapter, holder: FormViewHolder) = Unit
 }

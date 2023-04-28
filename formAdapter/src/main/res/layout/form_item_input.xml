@@ -2,21 +2,27 @@
 <com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/formContent"
+    style="@style/Widget.Material3.TextInputLayout.FilledBox"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@null"
     app:boxBackgroundMode="none"
-    app:endIconMinSize="@dimen/formTextSize"
-    app:hintEnabled="false">
+    app:endIconTint="?android:textColorHint"
+    app:hintEnabled="false"
+    app:prefixTextAppearance="@style/FormTextOtherAppearance"
+    app:suffixTextAppearance="@style/FormTextOtherAppearance">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/formContentEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fadingEdgeLength="@dimen/formTextSize"
+        android:imeOptions="actionDone"
         android:paddingStart="@dimen/formHorizontalLocalPaddingSize"
         android:paddingTop="@dimen/formVerticalLocalPaddingSize"
         android:paddingEnd="@dimen/formHorizontalLocalPaddingSize"
         android:paddingBottom="@dimen/formVerticalLocalPaddingSize"
-        android:textSize="@dimen/formTextSize" />
+        android:requiresFadingEdge="vertical|horizontal"
+        android:textAppearance="@style/FormTextAppearance" />
 
 </com.google.android.material.textfield.TextInputLayout>
