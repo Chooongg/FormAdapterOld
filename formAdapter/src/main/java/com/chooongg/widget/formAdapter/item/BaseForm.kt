@@ -254,6 +254,11 @@ abstract class BaseForm(
     abstract fun onCreateContentView(adapter: FormPartAdapter, parent: ViewGroup): View
 
     /**
+     * 绑定内容试图之前
+     */
+    open fun onBeforeBindContentView(adapter: FormPartAdapter, holder: FormViewHolder) {}
+
+    /**
      * 绑定内容视图
      */
     abstract fun onBindContentView(adapter: FormPartAdapter, holder: FormViewHolder)
@@ -266,6 +271,11 @@ abstract class BaseForm(
         holder: FormViewHolder,
         payloads: MutableList<Any>?
     ) = onBindContentView(adapter, holder)
+
+    /**
+     * 绑定内容视图之后
+     */
+    open fun onAfterBindContentView(adapter: FormPartAdapter, holder: FormViewHolder) {}
 
     /**
      * 设置点击事件

@@ -199,7 +199,9 @@ class FormPartAdapter internal constructor(
             it.partPosition = holder.bindingAdapterPosition
             it.adapterPosition = holder.absoluteAdapterPosition
             onBindParentViewHolder(holder, it)
+            it.onBeforeBindContentView(this, holder)
             it.onBindContentView(this, holder)
+            it.onAfterBindContentView(this, holder)
         }
     }
 
@@ -212,7 +214,9 @@ class FormPartAdapter internal constructor(
             it.partPosition = holder.bindingAdapterPosition
             it.adapterPosition = holder.absoluteAdapterPosition
             onBindParentViewHolder(holder, it)
+            it.onBeforeBindContentView(this, holder)
             it.onBindContentView(this, holder, payloads)
+            it.onAfterBindContentView(this, holder)
         }
     }
 
