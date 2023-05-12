@@ -1,6 +1,21 @@
 package com.chooongg.widget.formAdapter.enum
 
+/**
+ * 选项加载模式
+ */
 enum class FormOptionLoadMode {
-    NO_ACTION,
+    /**
+     * 无
+     */
+    NONE,
 
+    /**
+     * 为空时
+     */
+    EMPTY,
+
+    /**
+     * 总是
+     */
+    ALWAYS,
 }
