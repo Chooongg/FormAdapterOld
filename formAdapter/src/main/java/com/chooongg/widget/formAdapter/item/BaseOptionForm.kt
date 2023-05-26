@@ -4,15 +4,10 @@ import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 import com.chooongg.widget.formAdapter.enum.FormOptionLoadMode
 import com.chooongg.widget.formAdapter.option.Option
+import com.chooongg.widget.formAdapter.option.OptionResultState
 import kotlinx.coroutines.launch
 
 abstract class BaseOptionForm(name: CharSequence?, field: String?) : BaseForm(name, field) {
-
-    protected sealed class OptionState {
-        object NotLoading : OptionState()
-        object Loading : OptionState()
-        class Error : OptionState()
-    }
 
     /**
      * 是否具有打开操作
@@ -32,16 +27,16 @@ abstract class BaseOptionForm(name: CharSequence?, field: String?) : BaseForm(na
     /**
      * 选项加载回调
      */
-    var optionLoaded: (((List<Option>?) -> Unit) -> Unit)? = null
+    var optionLoader: (suspend ((OptionResultState) -> Unit) -> Unit)? = null
 
     override fun onBeforeBindContentView(adapter: FormPartAdapter, holder: FormViewHolder) {
 
     }
 
-    protected fun loadOption(adapter: FormPartAdapter, result: (List<Option>?) -> Unit) {
-        if (optionLoaded != null) {
+    protected fun loadOption(adapter: FormPartAdapter, result: (OptionResultState) -> Unit) {
+        if (optionLoader != null) {
             adapter.adapterScope.launch {
-                optionLoaded!!.invoke(result)
+                optionLoader!!.invoke(result)
             }
         } else {
             adapter.adapterScope.launch {

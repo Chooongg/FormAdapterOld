@@ -16,6 +16,7 @@ import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.addButton
 import com.chooongg.widget.formAdapter.addDivider
 import com.chooongg.widget.formAdapter.addInput
+import com.chooongg.widget.formAdapter.addSelector
 import com.chooongg.widget.formAdapter.addText
 import com.chooongg.widget.formAdapter.enum.FormEnableMode
 import com.chooongg.widget.formAdapter.item.BaseForm
@@ -24,6 +25,8 @@ import com.chooongg.widget.formAdapter.item.FormText
 import com.chooongg.widget.formAdapter.style.Material3CardElevatedStyle
 import com.chooongg.widget.formAdapter.style.Material3CardOutlinedStyle
 import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity(), FormEventListener {
 
@@ -62,6 +65,9 @@ class MainActivity : AppCompatActivity(), FormEventListener {
                         addButton("FormButton") {
                             buttonStyle = FormButton.ButtonStyle.TONAL
                             iconRes = com.google.android.material.R.drawable.ic_clock_black_24dp
+                        }
+                        addSelector("FormSelector"){
+
                         }
                     }
                 }

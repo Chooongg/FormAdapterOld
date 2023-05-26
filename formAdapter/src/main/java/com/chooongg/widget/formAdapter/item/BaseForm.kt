@@ -30,6 +30,8 @@ abstract class BaseForm(
      */
     private var extensionFieldAndContent: HashMap<String, Any?>? = null
 
+    //<editor-fold desc="基础 Basic">
+
     /**
      * 提示
      */
@@ -59,6 +61,15 @@ abstract class BaseForm(
      * 输出模式
      */
     open var outputMode: FormOutputMode = FormOutputMode.ALWAYS
+
+    /**
+     * 是否在组边缘展示
+     */
+    open var isShowOnEdge = true
+
+    //</editor-fold>
+
+    //<editor-fold desc="菜单 Menu">
 
     /**
      * 是否显示菜单
@@ -91,9 +102,18 @@ abstract class BaseForm(
     open var menuIconSize: Int? = null
 
     /**
-     * 是否在组边缘展示
+     * 菜单可见模式
      */
-    open var isShowOnEdge = true
+    open var menuVisibilityMode: FormVisibilityMode = FormVisibilityMode.ALWAYS
+
+    /**
+     * 菜单启用模式
+     */
+    open var menuEnableMode: FormEnableMode = FormEnableMode.ONLY_EDIT
+
+    //</editor-fold>
+
+    //<editor-fold desc="排版 Typeset">
 
     /**
      * 是否需要排版
@@ -104,6 +124,8 @@ abstract class BaseForm(
      * 排版样式
      */
     open var typeset: Typeset? = null
+
+    //</editor-fold>
 
     /**
      * 自定义输出接口
@@ -116,16 +138,17 @@ abstract class BaseForm(
     @androidx.annotation.IntRange(from = 1, to = 24)
     var spanWeight = 1
 
+    //<editor-fold desc="需计算的 To be calculated">
+
     /**
-     * 边界信息
+     * 单行显示块的数量
      */
-    var boundary: Boundary = Boundary()
-        internal set
-
-    internal var spanSize = 120
-
     var singleLineCount = 1
         internal set
+
+    /**
+     * 单行显示块的索引
+     */
     var singleLineIndex = 0
         internal set
 
@@ -154,9 +177,23 @@ abstract class BaseForm(
         internal set
 
     /**
+     * 边界信息
+     */
+    var boundary: Boundary = Boundary()
+        internal set
+
+    //</editor-fold>
+
+    //<editor-fold desc="内部 internal">
+
+    internal var spanSize = 120
+
+    /**
      * 反重复代码
      */
     val antiRepeatCode = System.currentTimeMillis() + Random.nextLong(3000)
+
+    //</editor-fold>
 
     /**
      * 设置扩展内容
@@ -191,7 +228,7 @@ abstract class BaseForm(
     /**
      * 设置自定义输出监听
      */
-    fun setCustomOutputListener(block: ((json: JSONObject) -> Unit)?) {
+    fun customOutput(block: ((json: JSONObject) -> Unit)?) {
         customOutputBlock = block
     }
 

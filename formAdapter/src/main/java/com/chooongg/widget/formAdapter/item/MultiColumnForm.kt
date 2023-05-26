@@ -6,7 +6,7 @@ import androidx.annotation.IntRange
 import com.chooongg.widget.formAdapter.FormPartAdapter
 import com.chooongg.widget.formAdapter.FormViewHolder
 
-class MultiColumnForm : BaseForm(null, null) {
+class MultiColumnForm internal constructor() : BaseForm(null, null) {
 
     @IntRange(from = 1, to = 5)
     var maxColumn = 2

@@ -2,7 +2,9 @@ package com.chooongg.widget.formAdapter
 
 import android.view.View
 import com.chooongg.widget.formAdapter.item.BaseForm
+import com.chooongg.widget.formAdapter.item.BaseOptionForm
 import com.chooongg.widget.formAdapter.option.Option
+import com.chooongg.widget.formAdapter.option.OptionResultState
 
 interface FormEventListener {
 
@@ -27,7 +29,7 @@ interface FormEventListener {
     suspend fun onFormOptionNeedLoad(
         adapter: FormPartAdapter,
         item: BaseForm,
-        block: (List<Option>?) -> Unit
+        block: (OptionResultState) -> Unit
     ) {
     }
 }
